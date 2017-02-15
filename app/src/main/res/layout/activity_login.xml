@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="inc.david.androidridesharenavigation.Activities.LoginActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:layout_alignParentTop="true"
+        android:id="@+id/editTextEmailLogin"
+        android:layout_alignParentStart="true"
+        android:hint="Email"
+        android:text="david@gmail.com" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:layout_below="@+id/editTextEmailLogin"
+        android:id="@+id/editTextPasswordLogin"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+
+        android:hint="Password" />
+
+    <Button
+        android:text="Sign In"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/cardview_light_background"
+        android:id="@+id/buttonLogin"
+        android:layout_below="@+id/editTextPasswordLogin"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Register Here!"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/cardview_light_background"
+
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/buttonRegister" />
+
+    <com.google.android.gms.common.SignInButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/googleID"
+        android:layout_below="@+id/buttonLogin"
+        android:layout_marginTop="27dp"
+        android:focusable="false">
+        android:
+
+    </com.google.android.gms.common.SignInButton>
+
+</RelativeLayout>

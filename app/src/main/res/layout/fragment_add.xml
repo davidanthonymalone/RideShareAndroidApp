@@ -1,0 +1,60 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="inc.david.androidridesharenavigation.Fragments.AddFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        tools:background="@color/cardview_light_background"
+        app:srcCompat='@drawable/add_btn'
+        android:background="@color/cardview_light_background"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:background="@drawable/input_outline"
+        android:hint="Commuting from to where?"
+
+        android:layout_below="@+id/imageButton"
+        android:id="@+id/titleEditText"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:background="@drawable/input_outline"
+        android:hint="Commute Description"
+
+        android:layout_below="@+id/titleEditText"
+        android:layout_alignEnd="@+id/titleEditText"
+        android:layout_marginTop="11dp"
+        android:id="@+id/descriptionEditText" />
+
+    <Button
+        android:text="Add RideShare Add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp"
+        android:id="@+id/submitButton"
+        android:textColor="@color/cardview_light_background" />
+    </RelativeLayout>
+
+</FrameLayout>

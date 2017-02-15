@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "1005561724702",
+    "firebase_url": "https://ridesharefinalproject.firebaseio.com",
+    "project_id": "ridesharefinalproject",
+    "storage_bucket": "ridesharefinalproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005561724702:android:f5a1d58366acc72d",
+        "android_client_info": {
+          "package_name": "inc.david.rideshareandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005561724702-8maiktdvdjtq11pu7i253t4hum8bp2vc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBErtAcrUfFXeMf46OBkRjRTjW_O9M-HSw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005561724702-8maiktdvdjtq11pu7i253t4hum8bp2vc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005561724702:android:a471a0145cbf99c5",
+        "android_client_info": {
+          "package_name": "inc.david.androidridesharenavigation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005561724702-8maiktdvdjtq11pu7i253t4hum8bp2vc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBErtAcrUfFXeMf46OBkRjRTjW_O9M-HSw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005561724702-8maiktdvdjtq11pu7i253t4hum8bp2vc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
