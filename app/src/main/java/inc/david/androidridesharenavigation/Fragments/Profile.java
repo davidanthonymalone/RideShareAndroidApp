@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -50,6 +52,7 @@ public class Profile extends Fragment {
     private ProgressDialog mProgress;
     private StorageReference mStorageImage;
     private OnFragmentInteractionListener mListener;
+    private TextView profileName;
     View v;
 
     public Profile() {
@@ -78,6 +81,7 @@ public class Profile extends Fragment {
 
         mSetupImageBtn = (ImageButton) v.findViewById(R.id.setupImage);
         mNameField = (EditText) v.findViewById(R.id.editTextProfileName);
+        profileName = (TextView) v.findViewById(R.id.textProfileName);
         profileButton = (Button) v.findViewById(R.id.profileSetupButton);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,14 +90,25 @@ public class Profile extends Fragment {
             }
         });
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        if(mAuth.getCurrentUser().getPhotoUrl() != null ){
+            Picasso.with(getActivity()).load(mAuth.getCurrentUser().getPhotoUrl()).resize(500, 500).into(mSetupImageBtn);
+
+        }
+        if(mAuth.getCurrentUser().getDisplayName() != null){
+            profileName.setText(mAuth.getCurrentUser().getDisplayName());
+            mNameField.setVisibility(View.GONE);
+
+        }
 
         mSetupImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+
+
+                    Intent galleryIntent = new Intent();
+                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent, GALLERY_REQUEST);
 
             }
         });

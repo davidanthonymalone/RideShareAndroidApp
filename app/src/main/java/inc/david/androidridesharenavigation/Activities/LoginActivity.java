@@ -141,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
             if (result.isSuccess()) {
 
 
+                try{
 
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
@@ -151,7 +152,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 startActivity(mainintent);
-                finish();
+                finish();}catch (Exception e){
+                    
+                }
 
             } else {
 

@@ -107,6 +107,7 @@ public class AllRideShares extends android.app.Fragment {
                 viewHolder.setDesc(model.getDesc());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setmLikebtn(post_key);
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -199,6 +200,26 @@ public class AllRideShares extends android.app.Fragment {
         public void setuserName(String name) {
             TextView post_name = (TextView) mView.findViewById(R.id.postedByTextView);
             post_name.setText(name);
+        }
+        public void setmLikebtn(final String post_key){
+            mDatabaseLike.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())){
+                        mLikebtn.setImageResource(R.drawable.ic_thumb);
+
+                    }else
+                        mLikebtn.setImageResource(R.drawable.ic_white);
+
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
 

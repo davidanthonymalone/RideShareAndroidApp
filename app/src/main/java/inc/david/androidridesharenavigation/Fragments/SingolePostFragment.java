@@ -73,7 +73,7 @@ public class SingolePostFragment extends Fragment {
 
                 mblodtitle.setText(post_title);
                 mblogdesc.setText(post_desc);
-                Picasso.with(getActivity()).load(post_imdage).into(mBlogSingleImage);
+                Picasso.with(getActivity()).load(post_imdage).resize(500, 500).into(mBlogSingleImage);
 
             }
 
