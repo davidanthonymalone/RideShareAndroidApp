@@ -1,16 +1,26 @@
 package inc.david.androidridesharenavigation.Models;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 /**
  * Created by david on 23/01/17.
  */
-
+@IgnoreExtraProperties
 public class Advert {
-    private String desc, image, title, username;
+    private String desc, image, title, username, uid;
+
+
 
     public Advert() {
 
     }
+    public String getUid() {
+        return uid;
+    }
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
     public String getDesc() {
         return desc;
     }
@@ -43,10 +53,11 @@ public class Advert {
         this.username = username;
     }
 
-    public Advert(String desc, String username, String title, String image) {
+    public Advert(String desc, String username, String title, String image, String uid) {
         this.desc = desc;
         this.username = username;
         this.title = title;
         this.image = image;
+        this.uid = uid;
     }
 }

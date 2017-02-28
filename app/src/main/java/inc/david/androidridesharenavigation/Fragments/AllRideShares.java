@@ -4,20 +4,16 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,12 +21,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
-import inc.david.androidridesharenavigation.Activities.RegisterActivity;
 import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
 
@@ -42,6 +37,8 @@ public class AllRideShares extends android.app.Fragment {
     private DatabaseReference mDatabase;
     private DatabaseReference mdatabbaseLike;
     DatabaseReference getmDatabaseUsers;
+    private DatabaseReference mDatabaseCurrentUser;
+    private Query mQuery;
     private boolean mProcessLike = false;
     private ProgressDialog p;
     private boolean mlike = false;
@@ -71,6 +68,9 @@ public class AllRideShares extends android.app.Fragment {
                              Bundle savedInstanceState) {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
         mdatabbaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
+        String currentUserId = MainActivity.tempUid;
+        mDatabaseCurrentUser = FirebaseDatabase.getInstance().getReference().child("RideShare");
+
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -116,7 +116,7 @@ public class AllRideShares extends android.app.Fragment {
 
                         Fragment fragment;
                         FragmentTransaction fragt = getFragmentManager().beginTransaction();
-                        fragt.replace(R.id.homeFrame, new SingolePostFragment()).addToBackStack("").commit();
+                        fragt.replace(R.id.homeFrame, new SinglePostFragment()).addToBackStack("").commit();
                         MainActivity.tempUid = post_key;
 
 
@@ -155,7 +155,9 @@ public class AllRideShares extends android.app.Fragment {
 
             }
         };
+
         adsList.setAdapter(firebaseRecyclerAdapter);
+
     }
 
     public interface OnFragmentInteractionListener {
@@ -205,15 +207,18 @@ public class AllRideShares extends android.app.Fragment {
             mDatabaseLike.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())){
-                        mLikebtn.setImageResource(R.drawable.ic_thumb);
+                    try {
+                        if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
+                            mLikebtn.setImageResource(R.drawable.ic_thumb);
 
-                    }else
-                        mLikebtn.setImageResource(R.drawable.ic_white);
+                        } else
+                            mLikebtn.setImageResource(R.drawable.ic_white);
+                    }catch(Exception exception){
 
+                    }
 
+                    }
 
-                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mLoginButton, mButtonR;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseUsers;
-    ProgressDialog p;
+
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     boolean flag = true;
@@ -75,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
         mLoginEmailField = (EditText) findViewById(R.id.editTextEmailLogin);
-        p  = new ProgressDialog(this);
         mLoginPasswordField = (EditText) findViewById(R.id.editTextPasswordLogin);
         mGoogleBtn = (SignInButton) findViewById(R.id.googleID);
         mLoginButton = (Button) findViewById(R.id.buttonLogin);
@@ -136,8 +135,6 @@ public class LoginActivity extends AppCompatActivity {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            p.setMessage("loggging in");
-            p.show();
             if (result.isSuccess()) {
 
 
@@ -153,6 +150,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 startActivity(mainintent);
                 finish();}catch (Exception e){
+                    Intent mainintent = new Intent(LoginActivity.this, MainActivity.class);
+                    mainintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     
                 }
 
@@ -181,7 +180,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(getApplicationContext(), "Please register first", LENGTH_LONG).show();
                         }
-                        p.dismiss();
                         checkUserExists();
                         // ...
                     }
@@ -200,10 +198,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        p.dismiss();
                         checkUserExists();
                     }else{
-                        p.dismiss();
                         Toast.makeText(getApplicationContext(), "Please register first", LENGTH_LONG).show();
                     }
                 }

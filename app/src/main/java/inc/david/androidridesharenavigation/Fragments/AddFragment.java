@@ -6,14 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +39,7 @@ public class AddFragment extends android.app.Fragment {
 
     View view;
     private ImageButton mSelectImage;
-    private EditText mPostTitle;
+    private EditText commentText;
     private EditText mpPostDesc;
     private Button mSubmitBtn;
     private Uri mImageUri = null;
@@ -92,10 +90,12 @@ public class AddFragment extends android.app.Fragment {
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_add, container, false);
-        mSelectImage = (ImageButton) view.findViewById(R.id.imageButton);
-        mPostTitle = (EditText) view.findViewById(R.id.titleEditText);
-        mpPostDesc = (EditText) view.findViewById(R.id.descriptionEditText);
         mSubmitBtn = (Button) view.findViewById(R.id.submitButton);
+
+        commentText = (EditText) view.findViewById(R.id.titleEditText);
+        mSelectImage = (ImageButton) view.findViewById(R.id.imageButton);
+        mpPostDesc = (EditText) view.findViewById(R.id.descriptionEditText);
+
 
 
 
@@ -105,7 +105,7 @@ public class AddFragment extends android.app.Fragment {
 
     private void startPosting() {
         mprogress.setMessage("Adding Now");
-        final String title__val = mPostTitle.getText().toString().trim();
+        final String title__val = commentText.getText().toString().trim();
         final String desc_val = mpPostDesc.getText().toString().trim();
         if(!TextUtils.isEmpty(title__val) && !TextUtils.isEmpty((desc_val)) && mImageUri != null){
             mprogress.show();
