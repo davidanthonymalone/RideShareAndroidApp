@@ -2,12 +2,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="inc.david.androidridesharenavigation.Fragments.UsersProfile">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <RatingBar
+            android:id="@+id/ratingBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/feedbackEdit"
+            android:max="5"
+            android:stepSize="0.1" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/userRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="800dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/feedbackButton" />
+
+        <Button
+            android:id="@+id/feedbackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ratingBar1"
+            android:text="Submit Feedback" />
+
+        <EditText
+            android:id="@+id/feedbackEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/avgRating"
+            android:layout_marginTop="55dp"
+            android:ems="10"
+            android:hint="feedback"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/editTextProfileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="40dp"
+            android:text="NAME"
+            android:textAlignment="center"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+        <RatingBar
+            android:id="@+id/avgRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextProfileName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="34dp" />
+
+    </RelativeLayout>
 
 </FrameLayout>

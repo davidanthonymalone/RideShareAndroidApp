@@ -2,17 +2,31 @@ package inc.david.androidridesharenavigation.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,25 +49,34 @@ import inc.david.androidridesharenavigation.R;
 import static android.app.Activity.RESULT_OK;
 
 
-public class AddFragment extends android.app.Fragment {
+public class AddFragment extends android.app.Fragment implements AdapterView.OnItemSelectedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener,
+        View.OnClickListener,
+        PlaceSelectionListener {
 
     View view;
     private ImageButton mSelectImage;
-    private EditText commentText;
-    private EditText mpPostDesc;
+    private Spinner commentText;
+    private Spinner goingToText;
     private Button mSubmitBtn;
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
-
+    private static final String LOG_TAG = "PlaceSelectionListener";
+    private static final int REQUEST_SELECT_PLACE = 1000;
+    public String newaddress;
     private static final int Gallery_Request = 1;
     private FirebaseUser mCurrentUser;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseUsers;
+    private static final LatLngBounds WATERFORD_BAR_VIEW = new LatLngBounds(
+            new LatLng(52.254539, -7.149922), new LatLng(52.254700, -7.100484));
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private ProgressDialog mprogress;
-
+    public String title__val, desc_val;
     private OnFragmentInteractionListener mListener;
 
     public AddFragment() {
@@ -88,13 +111,26 @@ public class AddFragment extends android.app.Fragment {
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
 
 
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_add, container, false);
         mSubmitBtn = (Button) view.findViewById(R.id.submitButton);
 
-        commentText = (EditText) view.findViewById(R.id.titleEditText);
+        commentText = (Spinner) view.findViewById(R.id.locationComingFrom);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.county_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        commentText.setAdapter(adapter);
+        commentText.setOnItemSelectedListener(this);
+
+
         mSelectImage = (ImageButton) view.findViewById(R.id.imageButton);
-        mpPostDesc = (EditText) view.findViewById(R.id.descriptionEditText);
+        goingToText = (Spinner) view.findViewById(R.id.locationGoingToo);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        goingToText.setAdapter(adapter);
+        goingToText.setOnItemSelectedListener(this);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getChildFragmentManager().findFragmentById(R.id.place_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setBoundsBias(WATERFORD_BAR_VIEW);
 
 
 
@@ -102,11 +138,31 @@ public class AddFragment extends android.app.Fragment {
         return view;
 
     }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getId()) {
+            case R.id.locationComingFrom:
+                title__val = parent.getItemAtPosition(position).toString().trim();                break;
+            case R.id.locationGoingToo:
+                desc_val = parent.getItemAtPosition(position).toString().trim();
+                break;
+            default:
+                break;
+        }
+
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
     private void startPosting() {
         mprogress.setMessage("Adding Now");
-        final String title__val = commentText.getText().toString().trim();
-        final String desc_val = mpPostDesc.getText().toString().trim();
+
+       // final String desc_val = goingToText.getText().toString().trim();
         if(!TextUtils.isEmpty(title__val) && !TextUtils.isEmpty((desc_val)) && mImageUri != null){
             mprogress.show();
 
@@ -124,7 +180,7 @@ public class AddFragment extends android.app.Fragment {
                     mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            newPost.child("title").setValue(title__val);
+                            newPost.child("title").setValue(newaddress);
                             newPost.child("desc").setValue(desc_val);
                             newPost.child("image").setValue(downloadUrl.toString());
                             newPost.child("uid").setValue(mCurrentUser.getUid());
@@ -163,6 +219,25 @@ public class AddFragment extends android.app.Fragment {
                     });
 
         }
+    }
+
+
+    @Override
+    public void onPlaceSelected(Place place) {
+
+
+         newaddress = place.getAddress().toString();
+        double beerLat = place.getLatLng().latitude;
+        double beerLng =  place.getLatLng().longitude;
+        Log.i(LOG_TAG, "WHooo it worked!: " + newaddress);
+
+
+
+    }
+
+    @Override
+    public void onError(Status status) {
+
     }
 
     @Override
@@ -215,8 +290,33 @@ public class AddFragment extends android.app.Fragment {
         }
     }
 
+    @Override
+    public void onClick(View v) {
 
-        public interface OnFragmentInteractionListener {
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+
+    public interface OnFragmentInteractionListener {
             // TODO: Update argument type and name
             void onFragmentInteraction(Uri uri);
         }

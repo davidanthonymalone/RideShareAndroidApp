@@ -82,8 +82,8 @@ public class SetupActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     String downloadUri = taskSnapshot.getDownloadUrl().toString();
-            mDatabaseUsers.child(user_id).child("name").setValue(name);
-            mDatabaseUsers.child(user_id).child("image").setValue(downloadUri);
+                     mDatabaseUsers.child(user_id).child("name").setValue(name);
+                    mDatabaseUsers.child(user_id).child("image").setValue(downloadUri);
                     mProgress.dismiss();
                     Intent setupIntent = new Intent(SetupActivity.this, MainActivity.class);
                     setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

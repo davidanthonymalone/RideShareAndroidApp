@@ -8,9 +8,19 @@
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_base">Base</string>
     <string name="title_activity_maps">Map</string>
 
     <string name="LogOut">logout</string>
+
+    <string-array name="county_array">
+        <item>Kilkenny</item>
+        <item>Wexford</item>
+        <item>Waterford</item>
+        <item>Carlow</item>
+        <item>Tipperary</item>
+        <item>Cork</item>
+    </string-array>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>

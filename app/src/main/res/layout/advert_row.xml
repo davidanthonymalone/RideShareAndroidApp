@@ -39,7 +39,6 @@
             android:text="Rideshare Posted by User:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView"
             android:padding="10dp"
             android:textStyle="normal|bold" />
 

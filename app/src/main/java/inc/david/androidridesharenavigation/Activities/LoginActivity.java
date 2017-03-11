@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        // Configure Google Sign In
+        // =========================Google Sign in  =================================================
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestScopes(new Scope(Scopes.PLUS_LOGIN))
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -123,25 +123,33 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+
     private void googleSignInF() {
 
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        try {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        }catch(Exception e){
+            
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        try{
+
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            GoogleSignInAccount account = result.getSignInAccount();
             if (result.isSuccess()) {
 
 
                 try{
 
                 // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
 
                 Intent mainintent = new Intent(LoginActivity.this, MainActivity.class);
@@ -152,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();}catch (Exception e){
                     Intent mainintent = new Intent(LoginActivity.this, MainActivity.class);
                     mainintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    
+
                 }
 
             } else {
@@ -162,6 +170,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), "set up account before logging in", LENGTH_LONG).show();
             }
+        }}catch(Exception c){
+
         }
     }
 
@@ -180,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(getApplicationContext(), "Please register first", LENGTH_LONG).show();
                         }
+
                         checkUserExists();
                         // ...
                     }
@@ -198,7 +209,11 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        checkUserExists();
+                        try {
+                            checkUserExists();
+                        }catch (Exception e){
+
+                        }
                     }else{
                         Toast.makeText(getApplicationContext(), "Please register first", LENGTH_LONG).show();
                     }
@@ -209,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void checkUserExists() {
+        try{
         if(mAuth.getCurrentUser() != null){
 
             final String user_id = mAuth.getCurrentUser().getUid();
@@ -217,13 +233,13 @@ public class LoginActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.hasChild(user_id)){
                         Intent mainintent = new Intent(LoginActivity.this, MainActivity.class);
-                        mainintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                       // mainintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(mainintent);
 
 
                     }else{
                         Intent setupIntent = new Intent(LoginActivity.this, SetupActivity.class);
-                        setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                      //  setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(setupIntent);
 
                     }
@@ -235,5 +251,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
             });
+        }}catch(Exception d){
+
         }}
 }

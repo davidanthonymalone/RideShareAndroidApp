@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.Fragments.AllRideShares;
+import inc.david.androidridesharenavigation.Fragments.MapsActivity2;
 import inc.david.androidridesharenavigation.Fragments.Profile;
 import inc.david.androidridesharenavigation.R;
 
@@ -68,7 +69,6 @@ public class MainActivity extends Base
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() == null) {
-                    ;
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
@@ -103,7 +103,7 @@ public class MainActivity extends Base
         if(currentUSer != null) {
             name.setText(currentUSer.getDisplayName());
             email.setText(currentUSer.getEmail());
-            Picasso.with(this).load(currentUSer.getPhotoUrl()).into(image);
+            Picasso.with(this).load(mDatabaseUsers.child("image").toString()).into(image);
         }
 
 
@@ -187,7 +187,14 @@ public class MainActivity extends Base
             fragt.addToBackStack(null);
             fragt.commit();
 
-        } else if (id == R.id.nav_add) {
+        } else if (id == R.id.nav_maps) {
+            fragt.replace(R.id.homeFrame, new MapsActivity2()).addToBackStack("").commit();
+
+
+
+        }
+
+        else if (id == R.id.nav_add) {
             fragt.replace(R.id.homeFrame, new AddFragment()).addToBackStack("").commit();
 
 

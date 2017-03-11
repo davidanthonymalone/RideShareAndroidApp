@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ public class AllRideShares extends android.app.Fragment {
     private ProgressDialog p;
     private boolean mlike = false;
     private DatabaseReference mDatabaseUsers;
+    private TextView postedby;
 
     View v;
 
@@ -66,6 +68,8 @@ public class AllRideShares extends android.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.fragment_all_ride_shares, container, false);
+
         mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
         mdatabbaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
         String currentUserId = MainActivity.tempUid;
@@ -73,11 +77,11 @@ public class AllRideShares extends android.app.Fragment {
 
         mAuth = FirebaseAuth.getInstance();
 
+        postedby = (TextView) v.findViewById(R.id.postedByTextView) ;
 
         mdatabbaseLike.keepSynced(true);
         mDatabase.keepSynced(true);
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_all_ride_shares, container, false);
         adsList = (RecyclerView) v.findViewById(R.id.advertslist);
         adsList.setHasFixedSize(true);
         adsList.setLayoutManager(new LinearLayoutManager(this.getActivity()));
@@ -90,11 +94,14 @@ public class AllRideShares extends android.app.Fragment {
     public void onStart() {
         super.onStart();
 
+
+        Query query = mDatabase.orderByChild("RideShare");
+
         FirebaseRecyclerAdapter<Advert, AdvertViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                 Advert.class,
                 R.layout.advert_row,
                 AdvertViewHolder.class,
-                mDatabase
+                query
 
 
         ) {
@@ -198,6 +205,7 @@ public class AllRideShares extends android.app.Fragment {
             Picasso.with(ctx).load(image).into(post_image);
 
         }
+
 
         public void setuserName(String name) {
             TextView post_name = (TextView) mView.findViewById(R.id.postedByTextView);

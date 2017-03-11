@@ -6,10 +6,19 @@ import com.google.firebase.database.IgnoreExtraProperties;
  * Created by david on 18/02/17.
  */
 @IgnoreExtraProperties
-public class Comment {
+public class UserFeedback {
     private String comment, postedby;
+    private double rating;
 
-    public Comment(){
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public UserFeedback(){
 
     }
 
@@ -17,9 +26,10 @@ public class Comment {
         return comment;
     }
 
-    public Comment(String comment, String postedby) {
+    public UserFeedback(String comment, String postedby, double rating) {
         this.comment = comment;
         this.postedby = postedby;
+        this.rating = rating;
     }
 
     public void setComment(String comment) {

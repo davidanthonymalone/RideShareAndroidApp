@@ -28,12 +28,15 @@
             android:text="Advert Description Goes Here"
             android:padding="10dp" />
 
-        <Button
-            android:text="accept"
-            android:layout_width="match_parent"
+        <RatingBar
+            android:id="@+id/ratingBar1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button2" />
-
+            android:max="5"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="false"
+            android:stepSize="0.1" />
 
     </LinearLayout>
 

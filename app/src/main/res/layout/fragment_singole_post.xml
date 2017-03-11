@@ -27,6 +27,15 @@
 
     </RelativeLayout>
 
+    <fragment
+        android:name="inc.david.androidridesharenavigation.Fragments.MapsActivity2"
+        android:id="@+id/mapz"
+        android:layout_width="300dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp" />
     <Button
         android:text="Add comment"
         android:layout_width="match_parent"
@@ -34,6 +43,8 @@
         android:layout_marginTop="32dp"
         android:id="@+id/commentButton"
         android:layout_below="@+id/desc"
+        android:textColor="@color/cardview_light_background"
+        android:background="@color/colorPrimary"
         android:layout_alignParentStart="true"
         android:padding="10dp" />
 
@@ -48,28 +59,6 @@
         android:hint="Add Comment"
         />
 
-    <Button
-        android:text="Remove"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/cardview_light_background"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button2"
-        android:visibility="invisible" />
-
-    <TextView
-        android:text="Commuting from to where?"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="25dp"
-        android:id="@+id/textView5"
-        android:textStyle="normal|bold"
-        android:textSize="20sp" />
-
     <TextView
         android:text="Additional Details?"
         android:layout_width="match_parent"
@@ -82,26 +71,15 @@
         android:textSize="20sp" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginTop="64dp"
-        android:id="@+id/title"
-        android:hint="Choose A Display Name"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:text="Comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/desc"
-        android:layout_marginTop="14dp"
-        android:layout_below="@+id/textView4"
-        android:layout_alignParentStart="true"
+        android:layout_marginTop="25dp"
         android:textStyle="normal|bold"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_below="@+id/mapz"
+        android:layout_alignStart="@+id/textView3" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -112,23 +90,69 @@
         android:layout_centerHorizontal="true"
         android:padding="10dp" />
 
-    <Button
-        android:text="Load Comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/commentButton"
-        android:layout_alignParentStart="true"
-        android:id="@+id/loadComments" />
-
     <android.support.v7.widget.RecyclerView
         android:layout_width="1000dp"
         android:layout_height="700dp"
         android:id="@+id/commentRecyclerList"
-        android:layout_below="@+id/loadComments"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="29dp">
+        android:layout_marginTop="22dp"
+        android:layout_below="@+id/removeButton"
+        android:layout_alignParentStart="true">
 
     </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:text="Delete Advert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/cardview_light_background"
+        android:id="@+id/removeButton"
+        android:layout_below="@+id/commentButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp" />
+
+    <TextView
+        android:text="Commuting from to where?"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView5"
+        android:textStyle="normal|bold"
+        android:textSize="20sp"
+        android:layout_above="@+id/textView4"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_marginTop="73dp"
+        android:id="@+id/title"
+        android:hint="Choose A Display Name"
+        android:layout_below="@+id/imageView2"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Advert Created By:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView5"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="11dp"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/imageView2" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:onClick="onClick"
+        android:id="@+id/createdBy"
+        android:textStyle="normal|bold|italic"
+        android:textAllCaps="true" />
 
 </RelativeLayout>
 

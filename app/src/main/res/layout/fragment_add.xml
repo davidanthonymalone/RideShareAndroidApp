@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="inc.david.androidridesharenavigation.Fragments.AddFragment">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -19,8 +20,17 @@
         android:background="@color/cardview_light_background"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true" />
-
-    <EditText
+        <fragment
+            android:id="@+id/place_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_height="wrap_content"
+            android:hint="Search for Bar Here"
+            android:layout_width="250dp"
+            android:layout_marginTop="35dp"
+            android:layout_below="@+id/locationGoingToo"
+            android:layout_centerHorizontal="true">
+        </fragment>
+    <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -29,23 +39,10 @@
         android:hint="Commuting from to where?"
 
         android:layout_below="@+id/imageButton"
-        android:id="@+id/titleEditText"
+        android:id="@+id/locationComingFrom"
         android:layout_alignParentStart="true" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:background="@drawable/input_outline"
-        android:hint="Commute Description"
-
-        android:layout_below="@+id/titleEditText"
-        android:layout_alignEnd="@+id/titleEditText"
-        android:layout_marginTop="11dp"
-        android:id="@+id/descriptionEditText" />
-
-    <Button
+        <Button
         android:text="Add RideShare Add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,6 +52,27 @@
         android:layout_marginBottom="19dp"
         android:id="@+id/submitButton"
         android:textColor="@color/cardview_light_background" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:background="@drawable/input_outline"
+            android:hint="Commute Description"
+
+            android:layout_marginTop="45dp"
+            android:id="@+id/locationGoingToo"
+            android:layout_below="@+id/locationComingFrom"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Leaving From?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/locationComingFrom"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="18dp" />
     </RelativeLayout>
 
 </FrameLayout>

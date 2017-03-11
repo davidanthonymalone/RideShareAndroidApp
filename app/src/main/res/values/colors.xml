@@ -4,14 +4,11 @@
     <color name="colorPrimaryDark">#db0003</color>
     <color name="colorAccent">#FF4081</color>
     <color name="appBGColor">#00fff8f8</color>
-    <color name="appFooterBGColor">#dedede</color>
     <color name="bgColor">#00ffffff</color>
     <color name="boxBGCol">#db0003</color>
     <color name="hFontCol">#ffffff</color>
     <color name="headBGCol">#db0003</color>
     <color name="bannerFontColor">#ffffff</color>
-    <color name="footerFontCol">#606060</color>
-    <color name="fontColor">#363737</color>
 
 
 </resources>
