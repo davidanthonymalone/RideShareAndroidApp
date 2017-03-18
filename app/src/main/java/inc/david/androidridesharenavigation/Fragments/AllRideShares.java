@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,8 +109,8 @@ public class AllRideShares extends android.app.Fragment {
 
                 final String post_key = getRef(position).getKey();
 
-                viewHolder.setTitle((model.getTitle()));
-                viewHolder.setDesc(model.getDesc());
+                viewHolder.setTitle((model.getGoingTo()));
+                viewHolder.setDesc(model.getLeaving());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setmLikebtn(post_key);

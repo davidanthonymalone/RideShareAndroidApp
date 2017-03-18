@@ -61,6 +61,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     private Spinner commentText;
     private Spinner goingToText;
     private Button mSubmitBtn;
+    double goingToLat, goingToLng;
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
     private static final String LOG_TAG = "PlaceSelectionListener";
@@ -122,10 +123,9 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
 
 
         mSelectImage = (ImageButton) view.findViewById(R.id.imageButton);
-        goingToText = (Spinner) view.findViewById(R.id.locationGoingToo);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        goingToText.setAdapter(adapter);
-        goingToText.setOnItemSelectedListener(this);
+  //      goingToText.setAdapter(adapter);
+    //    goingToText.setOnItemSelectedListener(this);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.place_fragment);
@@ -143,9 +143,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
         switch (parent.getId()) {
             case R.id.locationComingFrom:
                 title__val = parent.getItemAtPosition(position).toString().trim();                break;
-            case R.id.locationGoingToo:
-                desc_val = parent.getItemAtPosition(position).toString().trim();
-                break;
+
             default:
                 break;
         }
@@ -162,8 +160,8 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     private void startPosting() {
         mprogress.setMessage("Adding Now");
 
-       // final String desc_val = goingToText.getText().toString().trim();
-        if(!TextUtils.isEmpty(title__val) && !TextUtils.isEmpty((desc_val)) && mImageUri != null){
+        // final String desc_val = goingToText.getText().toString().trim();
+        if(!TextUtils.isEmpty(title__val)  && mImageUri != null){
             mprogress.show();
 
             StorageReference filepath = mStorage.child("RideShare").child(mImageUri.getLastPathSegment());
@@ -180,8 +178,11 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                     mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            newPost.child("title").setValue(newaddress);
-                            newPost.child("desc").setValue(desc_val);
+                            newPost.child("goingTo").setValue(newaddress);
+                            newPost.child("goingToLat").setValue(goingToLat);
+                            newPost.child("goingToLng").setValue(goingToLng);
+
+                            newPost.child("leaving").setValue(title__val);
                             newPost.child("image").setValue(downloadUrl.toString());
                             newPost.child("uid").setValue(mCurrentUser.getUid());
                             newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -226,9 +227,9 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public void onPlaceSelected(Place place) {
 
 
-         newaddress = place.getAddress().toString();
-        double beerLat = place.getLatLng().latitude;
-        double beerLng =  place.getLatLng().longitude;
+        newaddress = place.getAddress().toString();
+         goingToLat = place.getLatLng().latitude;
+         goingToLng =  place.getLatLng().longitude;
         Log.i(LOG_TAG, "WHooo it worked!: " + newaddress);
 
 
@@ -317,7 +318,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
 
 
     public interface OnFragmentInteractionListener {
-            // TODO: Update argument type and name
-            void onFragmentInteraction(Uri uri);
-        }
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
+}

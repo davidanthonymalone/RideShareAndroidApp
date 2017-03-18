@@ -7,9 +7,16 @@ import com.google.firebase.database.IgnoreExtraProperties;
  */
 @IgnoreExtraProperties
 public class Advert {
-    private String desc, image, title, username, uid;
+    private String leaving, image, goingTo, username, uid;
 
 
+    public String getGoingTo() {
+        return goingTo;
+    }
+
+    public void setGoingTo(String goingTo) {
+        this.goingTo = goingTo;
+    }
 
     public Advert() {
 
@@ -21,20 +28,20 @@ public class Advert {
     public void setUid(String uid) {
         this.uid = uid;
     }
-    public String getDesc() {
-        return desc;
+    public String getLeaving() {
+        return leaving;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setLeaving(String leaving) {
+        this.leaving = leaving;
     }
 
     public String getTitle() {
-        return title;
+        return goingTo;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.goingTo = title;
     }
 
     public String getImage() {
@@ -53,10 +60,10 @@ public class Advert {
         this.username = username;
     }
 
-    public Advert(String desc, String username, String title, String image, String uid) {
-        this.desc = desc;
+    public Advert(String leaving, String username, String title, String image, String uid) {
+        this.leaving = leaving;
         this.username = username;
-        this.title = title;
+        this.goingTo = title;
         this.image = image;
         this.uid = uid;
     }

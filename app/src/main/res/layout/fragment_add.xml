@@ -9,70 +9,66 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        tools:background="@color/cardview_light_background"
-        app:srcCompat='@drawable/add_btn'
-        android:background="@color/cardview_light_background"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true" />
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:background="@color/cardview_light_background"
+            android:scaleType="centerCrop"
+            app:srcCompat='@drawable/add_btn'
+            tools:background="@color/cardview_light_background" />
+
+        <Spinner
+            android:id="@+id/locationComingFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="15dp"
+            android:hint="Search for Bar Here"></Spinner>
+
         <fragment
             android:id="@+id/place_fragment"
             android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            android:layout_height="wrap_content"
-            android:hint="Search for Bar Here"
-            android:layout_width="250dp"
-            android:layout_marginTop="35dp"
-            android:layout_below="@+id/locationGoingToo"
-            android:layout_centerHorizontal="true">
-        </fragment>
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:background="@drawable/input_outline"
-        android:hint="Commuting from to where?"
-
-        android:layout_below="@+id/imageButton"
-        android:id="@+id/locationComingFrom"
-        android:layout_alignParentStart="true" />
-
-        <Button
-        android:text="Add RideShare Add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="19dp"
-        android:id="@+id/submitButton"
-        android:textColor="@color/cardview_light_background" />
-
-        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:ems="10"
-            android:background="@drawable/input_outline"
-            android:hint="Commute Description"
+            android:layout_marginTop="13dp"
+            android:hint="Search for Bar Here"
+            android:layout_below="@+id/textView6"
+            android:layout_alignParentEnd="true"></fragment>
 
-            android:layout_marginTop="45dp"
-            android:id="@+id/locationGoingToo"
-            android:layout_below="@+id/locationComingFrom"
-            android:layout_alignParentStart="true" />
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="19dp"
+            android:background="@color/colorPrimary"
+            android:text="Add RideShare Add"
+            android:textColor="@color/cardview_light_background" />
 
         <TextView
-            android:text="Leaving From?"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/locationComingFrom"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="18dp" />
+            android:layout_below="@+id/imageButton"
+            android:layout_marginTop="16dp"
+            android:text="Leaving From?" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/place_fragment"
+            android:layout_below="@+id/locationComingFrom"
+            android:layout_marginTop="18dp"
+            android:text="Going to?" />
     </RelativeLayout>
 
 </FrameLayout>

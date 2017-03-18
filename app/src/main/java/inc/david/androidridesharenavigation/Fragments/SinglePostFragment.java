@@ -147,7 +147,7 @@ public class SinglePostFragment extends Fragment {
         });
         commmentedit =(EditText) v.findViewById(R.id.editText) ;
 
-        mblogdesc = (TextView) v.findViewById(R.id.desc);
+        mblogdesc = (TextView) v.findViewById(R.id.leaving);
         mSingleRemoveButton = (Button) v.findViewById(R.id.removeButton);
 
 

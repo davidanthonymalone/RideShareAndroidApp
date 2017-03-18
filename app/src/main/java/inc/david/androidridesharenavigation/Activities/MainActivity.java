@@ -103,7 +103,7 @@ public class MainActivity extends Base
         if(currentUSer != null) {
             name.setText(currentUSer.getDisplayName());
             email.setText(currentUSer.getEmail());
-            Picasso.with(this).load(mDatabaseUsers.child("image").toString()).into(image);
+            Picasso.with(this).load(currentUSer.getPhotoUrl()).into(image);
         }
 
 
