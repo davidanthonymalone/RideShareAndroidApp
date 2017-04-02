@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
 
 
-public class AllRideShares extends android.app.Fragment {
+public class LikedRideShares extends android.app.Fragment {
     private RecyclerView adsList;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListenter;
@@ -44,24 +45,23 @@ public class AllRideShares extends android.app.Fragment {
     private boolean mlike = false;
     private DatabaseReference mDatabaseUsers;
     private TextView postedby;
-    public static Advert advert;
 
     View v;
 
 
-    public AllRideShares() {
+    public LikedRideShares() {
         // Required empty public constructor
     }
 
-    public static AllRideShares newInstance() {
-        AllRideShares fragment = new AllRideShares();
+    public static LikedRideShares newInstance() {
+        LikedRideShares fragment = new LikedRideShares();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle("All RideShares");
+        getActivity().setTitle("Liked RideShares");
 
     }
 
@@ -70,11 +70,15 @@ public class AllRideShares extends android.app.Fragment {
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_all_ride_shares, container, false);
 
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        //todo:Changing the heading from ALL to LIKED RIDESHARES
+        TextView likedHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
+        likedHeaderTextView.setText(R.string.LikedRideShares);
+
         mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
         mdatabbaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
         String currentUserId = MainActivity.tempUid;
         mDatabaseCurrentUser = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -95,14 +99,9 @@ public class AllRideShares extends android.app.Fragment {
     public void onStart() {
         super.onStart();
 
-        /*TODO:Putting these lines here to change heading back to ALL RIDESHARES: if the user has
-         *already created the LikedRideShares fragment the heading will have been changed to
-         *LIKED RIDESHARES
-         */
-        TextView allHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
-        allHeaderTextView.setText(R.string.AllRideShares);
 
-        Query query = mDatabase.orderByChild("RideShare");
+        Query query = mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares");
+        Log.v("LikedRideShare","Query: "+query.toString());
 
         FirebaseRecyclerAdapter<Advert, AdvertViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                 Advert.class,
@@ -111,15 +110,19 @@ public class AllRideShares extends android.app.Fragment {
                 query
 
 
-        ) {
-            @Override
-            protected void populateViewHolder(AdvertViewHolder viewHolder, final Advert model, int position) {
 
-                advert = model;
+        ){
+            @Override
+            protected void populateViewHolder(AdvertViewHolder viewHolder, Advert model, int position) {
+
+
                 final String post_key = getRef(position).getKey();
-                viewHolder.setLeaving((model.getComingFrom()));
+                Log.v("LikedRideShare","post_key: "+post_key);
+
                 viewHolder.setTitle((model.getGoingTo()));
+                Log.v("LikedRideShare","setTitle: "+model.getGoingTo());
                 viewHolder.setDesc(model.getComingFrom());
+                Log.v("LikedRideShare","setDesc: "+model.getComingFrom());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setmLikebtn(post_key);
@@ -150,13 +153,11 @@ public class AllRideShares extends android.app.Fragment {
                                         mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
                                         mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).removeValue();
                                         mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                        notifyDataSetChanged();
                                         mProcessLike = false;
 
                                     } else {
                                         mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("RandomValue");
-                                        mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).setValue(model);
-                                        mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-
                                         mProcessLike = false;
                                     }
                                 }
@@ -186,7 +187,7 @@ public class AllRideShares extends android.app.Fragment {
 
     public static class AdvertViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView post_title, comingFrom;
+        TextView post_title;
         ImageButton mLikebtn;
         DatabaseReference mDatabaseLike;
         FirebaseAuth mAuth;
@@ -203,15 +204,10 @@ public class AllRideShares extends android.app.Fragment {
 
         }
 
-
-        public void setLeaving(String leaving) {
-            TextView leaving_from = (TextView) mView.findViewById(R.id.comingFrom);
-            leaving_from.setText(leaving);
-        }
-
         public void setTitle(String title) {
             TextView post_title = (TextView) mView.findViewById(R.id.post_title);
             post_title.setText(title);
+            Log.v("LikedRideShare","post_title.setText: "+title);
         }
 
         public void setDesc(String desc) {
@@ -244,7 +240,7 @@ public class AllRideShares extends android.app.Fragment {
 
                     }
 
-                    }
+                }
 
 
                 @Override

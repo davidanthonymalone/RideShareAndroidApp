@@ -79,6 +79,9 @@ public class Profile extends Fragment {
         mStorageImage = FirebaseStorage.getInstance().getReference().child("Profile_images");
         mProgress = new ProgressDialog(getActivity());
 
+        TextView profileHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
+        profileHeaderTextView.setText(R.string.Profile);
+
         mSetupImageBtn = (ImageButton) v.findViewById(R.id.setupImage);
         mNameField = (EditText) v.findViewById(R.id.editTextProfileName);
         profileName = (TextView) v.findViewById(R.id.textProfileName);

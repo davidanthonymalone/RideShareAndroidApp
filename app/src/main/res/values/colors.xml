@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#db0003</color>
+    <color name="cardview_light_background">#db0003</color>
+
     <color name="colorPrimaryDark">#db0003</color>
     <color name="colorAccent">#FF4081</color>
     <color name="appBGColor">#00fff8f8</color>

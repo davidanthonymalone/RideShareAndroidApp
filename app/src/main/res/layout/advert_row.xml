@@ -11,12 +11,31 @@
         android:orientation="vertical">
 
         <TextView
+            android:text="Going To?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView12" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/post_title"
-            tools:text="Advert Title Goes Here"
+            tools:text="Going To?"
             android:padding="10dp"
             android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <TextView
+            android:text="Leaving From?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView14" />
+
+        <TextView
+            android:text="comingFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comingFrom"
             android:textSize="20sp" />
 
         <ImageView

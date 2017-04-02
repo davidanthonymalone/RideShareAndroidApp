@@ -82,7 +82,7 @@ public class UsersProfile
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getmDatabaseShowComments = FirebaseDatabase.getInstance().getReference().child("Users").child(MainActivity.tempUid).child("Feedback");
-        
+        getActivity().setTitle("User Profile");
 
     }
 

@@ -16,10 +16,10 @@
         android:layout_height="match_parent" android:id="@+id/homeFrame"
         android:background="@drawable/background"
 
-        android:layout_below="@+id/beerTitle" />
+        />
 
     <TextView
-        android:id="@+id/beerTitle"
+        android:id="@+id/mainTitle"
         style="@style/headerLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1005561724702-2s36mi6km11nbo444q9563fadvcbe4mv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inc.david.rideshareandroid",
+            "certificate_hash": "02a7c2db31f6c9918d1913b37d327a152cf9b548"
+          }
+        },
+        {
           "client_id": "1005561724702-8maiktdvdjtq11pu7i253t4hum8bp2vc.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -50,6 +58,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1005561724702-29dg8kmjo6ua6h2ao70ep70qe1f7ogi5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inc.david.androidridesharenavigation",
+            "certificate_hash": "0313f118e44e1ee93988a93a363d7bd1fe177206"
+          }
+        },
+        {
+          "client_id": "1005561724702-07fq4tdpa3p3l5h4o26rl7if6d3hgkta.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inc.david.androidridesharenavigation",
+            "certificate_hash": "02a7c2db31f6c9918d1913b37d327a152cf9b548"
+          }
+        },
         {
           "client_id": "1005561724702-8maiktdvdjtq11pu7i253t4hum8bp2vc.apps.googleusercontent.com",
           "client_type": 3

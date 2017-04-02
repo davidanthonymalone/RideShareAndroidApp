@@ -1,5 +1,8 @@
 package inc.david.androidridesharenavigation.Models;
 
+import android.util.StringBuilderPrinter;
+import android.widget.Button;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 /**
@@ -7,30 +10,75 @@ import com.google.firebase.database.IgnoreExtraProperties;
  */
 @IgnoreExtraProperties
 public class Comment {
-    private String comment, postedby;
+    private String commentText;
+    private String postedBy;
+    private String postedByIDText;
+    private String accepted;
+    private Button acceptButton;
+    private Button deleteButton;
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
+
+
+    public String getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(String accepted) {
+        this.accepted = accepted;
+    }
 
     public Comment(){
 
     }
 
-    public String getComment() {
-        return comment;
+    public Comment(String commentText, String postedBy, String postedByIDText, String accepted) {
+        this.commentText = commentText;
+        this.postedBy = postedBy;
+        this.postedByIDText = postedByIDText;
+        this.accepted = accepted;
     }
 
-    public Comment(String comment, String postedby) {
-        this.comment = comment;
-        this.postedby = postedby;
+    public Button getDeleteButton() {
+        return deleteButton;
     }
+
+    public void setDeleteButton(Button deleteButton) {
+        this.deleteButton = deleteButton;
+    }
+
+    public Button getAcceptButton() {
+        return acceptButton;
+    }
+
+    public void setAcceptButton(Button acceptButton) {
+        this.acceptButton = acceptButton;
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
+
+    public String getPostedByIDText() {
+        return postedByIDText;
+    }
+
+    public void setPostedByIDText(String postedByIDText) {
+        this.postedByIDText = postedByIDText;
+    }
+
 
     public void setComment(String comment) {
-        this.comment = comment;
+        this.commentText = comment;
     }
 
     public String getPostedby() {
-        return postedby;
+        return postedBy;
     }
 
-    public void setPostedby(String postedby) {
-        this.postedby = postedby;
+    public void setPostedby(String postedBy) {
+        this.postedBy = postedBy;
     }
 }

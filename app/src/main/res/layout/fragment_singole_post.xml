@@ -1,4 +1,5 @@
-<ScrollView android:layout_width="match_parent"
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -9,152 +10,187 @@
     android:layout_height="match_parent"
     tools:context="inc.david.androidridesharenavigation.Fragments.SinglePostFragment">
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:saveEnabled="true"
-    android:scrollbarAlwaysDrawHorizontalTrack="true"
-    android:scrollbarAlwaysDrawVerticalTrack="true"
-    android:scrollbars="vertical"
-    android:soundEffectsEnabled="true"
-    android:scrollIndicators="right"
-    android:scrollbarStyle="insideOverlay">
-    <!-- TODO: Update blank fragment layout -->
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:saveEnabled="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:soundEffectsEnabled="true"
+        android:scrollIndicators="right"
+        android:scrollbarStyle="insideOverlay">
+        <!-- TODO: Update blank fragment layout -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </RelativeLayout>
+
+        <Button
+            android:text="Add comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:id="@+id/commentButton"
+            android:layout_below="@+id/comingFrom"
+            android:textColor="@color/cardview_light_background"
+            android:background="@color/colorPrimary"
+            android:layout_alignParentStart="true"
+            android:padding="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:layout_below="@+id/comingFrom"
+            android:layout_alignParentStart="true"
+            android:id="@+id/editText"
+            android:hint="Add Comment"
+            />
+
+        <TextView
+            android:text="Comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comingFrom"
+            android:layout_marginTop="25dp"
+            android:textStyle="normal|bold"
+            android:textSize="20sp"
+            android:layout_below="@+id/mapz"
+            android:layout_alignStart="@+id/textView3" />
+
+        <ListView
+            android:layout_width="1000dp"
+            android:layout_height="700dp"
+            android:id="@+id/commentRecyclerList"
+            android:layout_marginTop="22dp"
+            android:layout_below="@+id/removeButton"
+            android:layout_alignParentStart="true">
+
+        </ListView>
+
+        <Button
+            android:id="@+id/removeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/commentButton"
+            android:layout_marginTop="13dp"
+            android:background="@color/colorPrimary"
+            android:text="Delete Advert"
+            android:textColor="@color/cardview_light_background"
+            android:visibility="gone" />
+
+        <TextView
+            android:text="Advert Created By:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView5"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="11dp"
+            android:id="@+id/textView3"
+            android:layout_below="@+id/imageView2" />
+
+        <fragment android:name="com.google.android.gms.maps.MapFragment"
+            android:id="@+id/mapz" android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_below="@+id/textView4"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="28dp" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/goingToTextview"
+            tools:text="going To?"
+            android:textSize="18sp"
+            android:layout_below="@+id/textView10"
+            android:layout_alignStart="@+id/textView3"
+            android:layout_marginTop="11dp" />
+
+        <TextView
+            android:text="Going To Where?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView10"
+            android:textSize="20sp"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="12dp"
+            android:layout_below="@+id/title"
+            android:layout_alignStart="@+id/textView3" />
+
+        <TextView
+            android:text="Commuting from where?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:id="@+id/createdBy"
+            android:textStyle="normal|bold|italic"
+            android:textAllCaps="true"
+            android:layout_below="@+id/imageView2"
+            android:layout_alignStart="@+id/textView3"
+            android:layout_marginTop="22dp" />
+
+        <TextView
+            android:text="Commuting from to where?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:textStyle="normal|bold"
+            android:textSize="20sp"
+            android:layout_marginTop="14dp"
+            android:layout_below="@+id/goingToTextview"
+            android:layout_alignStart="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/remainingSeats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seats Remaining in Car:"
+            android:layout_below="@+id/textView5"
+            android:layout_alignStart="@+id/textView5" />
+
+        <TextView
+            android:text="Route On Map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:id="@+id/textView4"
+            android:textStyle="normal|bold"
+            android:textSize="20sp"
+            android:layout_below="@+id/remainingSeats"
+            android:layout_alignStart="@+id/remainingSeats" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:hint="Choose A Display Name"
+            android:inputType="textPersonName"
+            android:maxLines="4"
+            tools:text="coming from?"
+            android:textSize="18sp"
+            android:layout_below="@+id/createdBy"
+            android:layout_alignStart="@+id/textView3" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/profile"
+            android:id="@+id/imageView2"
+            android:padding="10dp"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
 
     </RelativeLayout>
-
-    <fragment
-        android:name="inc.david.androidridesharenavigation.Fragments.MapsActivity2"
-        android:id="@+id/mapz"
-        android:layout_width="300dp"
-        android:layout_height="240dp"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_below="@+id/textView4"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp" />
-    <Button
-        android:text="Add comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:id="@+id/commentButton"
-        android:layout_below="@+id/leaving"
-        android:textColor="@color/cardview_light_background"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentStart="true"
-        android:padding="10dp" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_below="@+id/leaving"
-        android:layout_alignParentStart="true"
-        android:id="@+id/editText"
-        android:hint="Add Comment"
-        />
-
-    <TextView
-        android:text="Additional Details?"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/title"
-        android:layout_alignParentStart="true"
-        android:textStyle="normal|bold"
-        android:textSize="20sp" />
-
-    <TextView
-        android:text="Comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/leaving"
-        android:layout_marginTop="25dp"
-        android:textStyle="normal|bold"
-        android:textSize="20sp"
-        android:layout_below="@+id/mapz"
-        android:layout_alignStart="@+id/textView3" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/profile"
-        android:id="@+id/imageView2"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:padding="10dp" />
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="1000dp"
-        android:layout_height="700dp"
-        android:id="@+id/commentRecyclerList"
-        android:layout_marginTop="22dp"
-        android:layout_below="@+id/removeButton"
-        android:layout_alignParentStart="true">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <Button
-        android:text="Delete Advert"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/cardview_light_background"
-        android:id="@+id/removeButton"
-        android:layout_below="@+id/commentButton"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="13dp" />
-
-    <TextView
-        android:text="Commuting from to where?"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:textStyle="normal|bold"
-        android:textSize="20sp"
-        android:layout_above="@+id/textView4"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="24dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginTop="73dp"
-        android:id="@+id/title"
-        android:hint="Choose A Display Name"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="Advert Created By:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView5"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="11dp"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/imageView2" />
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignStart="@+id/textView3"
-        android:onClick="onClick"
-        android:id="@+id/createdBy"
-        android:textStyle="normal|bold|italic"
-        android:textAllCaps="true" />
-
-</RelativeLayout>
 
 
 </FrameLayout>

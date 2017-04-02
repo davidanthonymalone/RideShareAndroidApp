@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="inc.david.androidridesharenavigation.Fragments.AddFragment">
 
@@ -29,28 +30,8 @@
             android:layout_below="@+id/textView"
             android:layout_marginStart="11dp"
             android:layout_marginTop="15dp"
-            android:hint="Search for Bar Here"></Spinner>
+            android:visibility="gone"></Spinner>
 
-        <fragment
-            android:id="@+id/place_fragment"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:hint="Search for Bar Here"
-            android:layout_below="@+id/textView6"
-            android:layout_alignParentEnd="true"></fragment>
-
-        <Button
-            android:id="@+id/submitButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="19dp"
-            android:background="@color/colorPrimary"
-            android:text="Add RideShare Add"
-            android:textColor="@color/cardview_light_background" />
 
         <TextView
             android:id="@+id/textView"
@@ -59,7 +40,8 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/imageButton"
             android:layout_marginTop="16dp"
-            android:text="Leaving From?" />
+            android:text="Leaving From?"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textView6"
@@ -68,7 +50,37 @@
             android:layout_alignStart="@+id/place_fragment"
             android:layout_below="@+id/locationComingFrom"
             android:layout_marginTop="18dp"
-            android:text="Going to?" />
+            android:text="Going to?"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageButton"
+            android:text="How many seats available?"
+            android:visibility="gone" />
+
+        <Spinner
+            android:id="@+id/noOfSeatsSpinner"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageButton"
+            android:layout_toEndOf="@+id/textView7"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/subAddFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imageButton"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/locationComingFrom">
+
+        </FrameLayout>
     </RelativeLayout>
+
+
 
 </FrameLayout>

@@ -5,11 +5,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="AllRideShares">All RideShares</string>
+    <string name="LikedRideShares">Liked RideShares</string>
+    <string name="Profile">Profile</string>
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_base">Base</string>
     <string name="title_activity_maps">Map</string>
+    <string name="AddFragment">ADdFragment</string>
 
     <string name="LogOut">logout</string>
 
@@ -21,6 +24,23 @@
         <item>Tipperary</item>
         <item>Cork</item>
     </string-array>
+
+    <string-array name="no_of_seats">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="title_activity_maps2">Map</string>
+
+    <string name="instructions_start">Start creating your RideShare ad by clicking start.</string>
+    <string name="instructions_add_leave">Add number of seats and point of comingFrom.</string>
+    <string name="instructions_add_going_to">Add destination point and picture of car.</string>
+    <string name="instructions_add_pic">Add a picture by touching upload thingamjiggy above :p</string>
+    <string name="instructions_review">RideShare Summary</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

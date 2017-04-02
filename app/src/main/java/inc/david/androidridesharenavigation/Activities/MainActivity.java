@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.Fragments.AllRideShares;
+import inc.david.androidridesharenavigation.Fragments.LikedRideShares;
 import inc.david.androidridesharenavigation.Fragments.MapsActivity2;
 import inc.david.androidridesharenavigation.Fragments.Profile;
 import inc.david.androidridesharenavigation.R;
@@ -187,10 +188,8 @@ public class MainActivity extends Base
             fragt.addToBackStack(null);
             fragt.commit();
 
-        } else if (id == R.id.nav_maps) {
-            fragt.replace(R.id.homeFrame, new MapsActivity2()).addToBackStack("").commit();
-
-
+        } else if(id == R.id.nav_liked){
+            fragt.replace(R.id.homeFrame, new LikedRideShares()).addToBackStack("").commit();
 
         }
 

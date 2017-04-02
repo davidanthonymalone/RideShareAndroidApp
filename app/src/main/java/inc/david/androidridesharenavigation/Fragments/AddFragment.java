@@ -1,5 +1,6 @@
 package inc.david.androidridesharenavigation.Fragments;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Location;
@@ -12,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
@@ -44,6 +47,8 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
+import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddOne;
+import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddTwo;
 import inc.david.androidridesharenavigation.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -60,25 +65,34 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     private ImageButton mSelectImage;
     private Spinner commentText;
     private Spinner goingToText;
-    private Button mSubmitBtn;
-    double goingToLat, goingToLng;
-    private Uri mImageUri = null;
+    public static Button mSubmitBtn;
+    public static double goingToLat;
+    public static double goingToLng;
+    public static double comingFromLat;
+    public static double comingFromLng;
+    public static Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 1;
     private static final String LOG_TAG = "PlaceSelectionListener";
     private static final int REQUEST_SELECT_PLACE = 1000;
-    public String newaddress;
+    public static String goingTo;
+    public static String noOfSeatsSelected;
+    public static int noOfSeatsNumber;
     private static final int Gallery_Request = 1;
-    private FirebaseUser mCurrentUser;
-    private StorageReference mStorage;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseUsers;
+    public static FirebaseUser mCurrentUser;
+    public static StorageReference mStorage;
+    public static DatabaseReference mDatabase;
+    public static DatabaseReference mDatabaseUsers;
     private static final LatLngBounds WATERFORD_BAR_VIEW = new LatLngBounds(
             new LatLng(52.254539, -7.149922), new LatLng(52.254700, -7.100484));
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    private ProgressDialog mprogress;
+    public static FirebaseUser currentUser;
+    public static ProgressDialog mprogress;
     public String title__val, desc_val;
     private OnFragmentInteractionListener mListener;
+    Spinner noOfSeatsSpinner;
+    public static String comingFrom;
+    FrameLayout subAddFrame;
+    public static FragmentManager fragmentManager;
 
     public AddFragment() {
         // Required empty public constructor
@@ -95,7 +109,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getActivity().setTitle("Add Fragment");
 
 
 
@@ -113,7 +127,28 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
 
 
         view = inflater.inflate(R.layout.fragment_add, container, false);
-        mSubmitBtn = (Button) view.findViewById(R.id.submitButton);
+
+
+        subAddFrame = (FrameLayout)view.findViewById(R.id.subAddFrame);
+
+        fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.subAddFrame, new SubAddOne()).commit();
+
+        noOfSeatsSpinner = (Spinner)view.findViewById(R.id.noOfSeatsSpinner);
+        ArrayAdapter noOfSeatsAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.no_of_seats, android.R.layout.simple_spinner_item);
+        noOfSeatsSpinner.setAdapter(noOfSeatsAdapter);
+
+        noOfSeatsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                noOfSeatsSelected = parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         commentText = (Spinner) view.findViewById(R.id.locationComingFrom);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.county_array, android.R.layout.simple_spinner_item);
@@ -126,12 +161,12 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
   //      goingToText.setAdapter(adapter);
     //    goingToText.setOnItemSelectedListener(this);
-
+/*
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.place_fragment);
         autocompleteFragment.setOnPlaceSelectedListener(this);
         autocompleteFragment.setBoundsBias(WATERFORD_BAR_VIEW);
-
+*/
 
 
 
@@ -142,7 +177,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.locationComingFrom:
-                title__val = parent.getItemAtPosition(position).toString().trim();                break;
+                //title__val = parent.getItemAtPosition(position).toString().trim();                break;
 
             default:
                 break;
@@ -160,8 +195,11 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     private void startPosting() {
         mprogress.setMessage("Adding Now");
 
+        if(noOfSeatsSelected != null) {
+            noOfSeatsNumber = Integer.parseInt(noOfSeatsSelected);
+        }
         // final String desc_val = goingToText.getText().toString().trim();
-        if(!TextUtils.isEmpty(title__val)  && mImageUri != null){
+        if(!TextUtils.isEmpty(comingFrom)  && mImageUri != null){
             mprogress.show();
 
             StorageReference filepath = mStorage.child("RideShare").child(mImageUri.getLastPathSegment());
@@ -170,7 +208,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
                     final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    final   DatabaseReference newPost = mDatabase.push();
+                    final DatabaseReference newPost = mDatabase.push();
 
 
 
@@ -178,11 +216,17 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                     mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            newPost.child("goingTo").setValue(newaddress);
+                            newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                            newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+
+                            newPost.child("goingTo").setValue(goingTo);
                             newPost.child("goingToLat").setValue(goingToLat);
                             newPost.child("goingToLng").setValue(goingToLng);
 
-                            newPost.child("leaving").setValue(title__val);
+                            newPost.child("comingFrom").setValue(comingFrom);
+                            newPost.child("comingFromLat").setValue(comingFromLat);
+                            newPost.child("comingFromLng").setValue(comingFromLng);
+
                             newPost.child("image").setValue(downloadUrl.toString());
                             newPost.child("uid").setValue(mCurrentUser.getUid());
                             newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -206,6 +250,10 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                         }
                     });
 
+
+                    goingToLat = 0;
+                    goingToLng = 0;
+                    goingToText = null;
                     mprogress.dismiss();
 
 
@@ -226,13 +274,26 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     @Override
     public void onPlaceSelected(Place place) {
 
+        goingTo = place.getAddress().toString();
+        goingToLat = place.getLatLng().latitude;
+        goingToLng = place.getLatLng().longitude;
+        Log.i(LOG_TAG, "WHooo it worked!: " + goingTo);
+        Log.v("AddFrag", "goingTo: " + goingTo);
+        Log.v("AddFrag", "goingToLat: " + goingToLat);
+        Log.v("AddFrag", "goingToLng: " + goingToLng);
 
-        newaddress = place.getAddress().toString();
-         goingToLat = place.getLatLng().latitude;
-         goingToLng =  place.getLatLng().longitude;
-        Log.i(LOG_TAG, "WHooo it worked!: " + newaddress);
-
-
+        if(!goingTo.isEmpty()) {
+            comingFrom = place.getAddress().toString();
+        }
+         if(goingToLng == 0) {
+             comingFromLat = place.getLatLng().latitude;
+         }
+         if(goingToLat == 0) {
+             comingFromLng = place.getLatLng().longitude;
+         }
+                Log.v("AddFrag", "comingFrom: " + comingFrom);
+                Log.v("AddFrag", "comingFromLat: " + comingFromLat);
+                Log.v("AddFrag", "comingFromLng: " + comingFromLng);
 
     }
 
@@ -276,12 +337,12 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                 startActivityForResult(galleryIntent, Gallery_Request);
             }
         });
-        mSubmitBtn.setOnClickListener(new View.OnClickListener() {
+/*        mSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startPosting();
             }
-        });
+        }); */
     }
 
     // TODO: Rename method, update argument and hook method into UI event
