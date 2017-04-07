@@ -227,6 +227,8 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                             newPost.child("comingFromLat").setValue(comingFromLat);
                             newPost.child("comingFromLng").setValue(comingFromLng);
 
+
+
                             newPost.child("image").setValue(downloadUrl.toString());
                             newPost.child("uid").setValue(mCurrentUser.getUid());
                             newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {

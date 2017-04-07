@@ -2,13 +2,16 @@ package inc.david.androidridesharenavigation.Activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,22 +32,28 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.Fragments.AllRideShares;
 import inc.david.androidridesharenavigation.Fragments.LikedRideShares;
 import inc.david.androidridesharenavigation.Fragments.MapsActivity2;
 import inc.david.androidridesharenavigation.Fragments.Profile;
+import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
 
 
 public class MainActivity extends Base
-        implements NavigationView.OnNavigationItemSelectedListener, AllRideShares.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AllRideShares.OnFragmentInteractionListener, SearchView.OnQueryTextListener {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     DatabaseReference mDatabaseUsers;
     FirebaseAuth.AuthStateListener mAuthListenter;
     FirebaseUser currentUSer;
-
+    public SearchView searchView;
+    public String newText;
+    public static String d = null;
+    public ArrayList <Advert> arrayList = new ArrayList<>();
     public static String tempUid = null;
     TextView t;
 
@@ -164,12 +173,8 @@ public class MainActivity extends Base
 
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+
+
 
 
 
@@ -212,6 +217,20 @@ public class MainActivity extends Base
 
     private void logout() {
         mAuth.signOut();
+
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        AllRideShares ride = new AllRideShares();
+        ride.query = FirebaseDatabase.getInstance().getReference().child("RideShare").child("ComingFrom").equalTo(newText);
+        return true;
 
     }
 

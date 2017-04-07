@@ -10,8 +10,9 @@ import java.util.Map;
  */
 @IgnoreExtraProperties
 public class Advert {
-    private String comingFrom, goingTo, username,
+    private String comingFrom,  goingTo, username,
             image, uid;
+    private int advertid;
     private Map<String,String> comments = new HashMap<String, String>();
     private Map<String,String> likedBy = new HashMap<>();
 
@@ -143,7 +144,15 @@ public class Advert {
         this.username = username;
     }
 
-    public Advert(String comingFrom, String username, String goingTo, String image, String uid,
+    public int getAdvertid() {
+        return advertid;
+    }
+
+    public void setAdvertid(int advertid) {
+        this.advertid = advertid;
+    }
+
+    public Advert(String comingFrom, int advertid, String username, String goingTo, String image, String uid,
                   long goingToLat, long goingToLng, long comingFromLat, long comingFromLng,
                   int seatsRemaining, int noOfSeats, Map<String,String> comments, Map<String,String> likedBy, Map<String,String> usersAccepted) {
         this.comingFrom = comingFrom;
@@ -151,6 +160,8 @@ public class Advert {
         this.goingTo = goingTo;
         this.image = image;
         this.uid = uid;
+        this.advertid = advertid;
+
         this.goingToLat = goingToLat;
         this.goingToLng = goingToLng;
         this.comingFromLat = comingFromLat;

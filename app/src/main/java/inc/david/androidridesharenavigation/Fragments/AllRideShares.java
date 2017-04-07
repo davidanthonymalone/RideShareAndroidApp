@@ -3,12 +3,19 @@ package inc.david.androidridesharenavigation.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -21,30 +28,44 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
 
+import static android.content.Context.SEARCH_SERVICE;
 
-public class AllRideShares extends android.app.Fragment {
-    private RecyclerView adsList;
+
+public class AllRideShares extends android.app.Fragment implements SearchView.OnQueryTextListener {
+    public RecyclerView adsList;
     private FirebaseAuth mAuth;
+    public FirebaseRecyclerAdapter<Advert, AdvertViewHolder> advertadapter;
     private FirebaseAuth.AuthStateListener mAuthListenter;
-    private DatabaseReference mDatabase;
+    public DatabaseReference mDatabase;
     private DatabaseReference mdatabbaseLike;
     DatabaseReference getmDatabaseUsers;
     private DatabaseReference mDatabaseCurrentUser;
+    public SearchView searchView;
     private Query mQuery;
+    public String d;
     private boolean mProcessLike = false;
     private ProgressDialog p;
+    public Query query;
     private boolean mlike = false;
     private DatabaseReference mDatabaseUsers;
     private TextView postedby;
+    public   List<String> yourStringArray;
     public static Advert advert;
+    ArrayList<Class<Advert>> arrayList = new ArrayList<>();
+
+
 
     View v;
 
@@ -62,6 +83,9 @@ public class AllRideShares extends android.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle("All RideShares");
+        setHasOptionsMenu(true);
+
+
 
     }
 
@@ -72,11 +96,37 @@ public class AllRideShares extends android.app.Fragment {
 
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                     @Override
+                                                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                                                         arrayList = new ArrayList<>();
+
+
+                                                         // Result will be holded Here
+                                                         for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                                                             arrayList.add(Advert.class); //add result into array list
+                                                             String TAG = "";
+                                                             Log.d(TAG, "onDataChange: " + arrayList);
+
+
+                                                         }
+                                                     }
+
+                                                     @Override
+                                                     public void onCancelled(DatabaseError databaseError) {
+
+                                                     }
+
+
+                                                 });
         mdatabbaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
         String currentUserId = MainActivity.tempUid;
         mDatabaseCurrentUser = FirebaseDatabase.getInstance().getReference().child("RideShare");
 
         mAuth = FirebaseAuth.getInstance();
+        setHasOptionsMenu(true);
 
         postedby = (TextView) v.findViewById(R.id.postedByTextView) ;
 
@@ -89,22 +139,21 @@ public class AllRideShares extends android.app.Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
+
+            // TODO: Rename method, update argument and hook method into UI event
 
     @Override
     public void onStart() {
         super.onStart();
 
-        /*TODO:Putting these lines here to change heading back to ALL RIDESHARES: if the user has
-         *already created the LikedRideShares fragment the heading will have been changed to
-         *LIKED RIDESHARES
-         */
+
         TextView allHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
         allHeaderTextView.setText(R.string.AllRideShares);
 
-        Query query = mDatabase.orderByChild("RideShare");
 
-        FirebaseRecyclerAdapter<Advert, AdvertViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
+        query = mDatabase.orderByChild("comingFrom");
+         advertadapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                 Advert.class,
                 R.layout.advert_row,
                 AdvertViewHolder.class,
@@ -122,7 +171,9 @@ public class AllRideShares extends android.app.Fragment {
                 viewHolder.setDesc(model.getComingFrom());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setmLikebtn(post_key);
+
+
+
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -145,12 +196,19 @@ public class AllRideShares extends android.app.Fragment {
                         mdatabbaseLike.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
+
+                                yourStringArray  = dataSnapshot.getValue(t);
+
+
                                 if (mProcessLike) {
                                     if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
                                         mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
                                         mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).removeValue();
                                         mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).removeValue();
                                         mProcessLike = false;
+
+
 
                                     } else {
                                         mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("RandomValue");
@@ -176,9 +234,49 @@ public class AllRideShares extends android.app.Fragment {
             }
         };
 
-        adsList.setAdapter(firebaseRecyclerAdapter);
+
+        adsList.setAdapter(advertadapter);
 
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                AllRideShares ride = new AllRideShares();
+
+
+                String d = newText;
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu,inflater);
+
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+
+
 
     public interface OnFragmentInteractionListener {
     }
@@ -192,6 +290,7 @@ public class AllRideShares extends android.app.Fragment {
         FirebaseAuth mAuth;
 
 
+
         public AdvertViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -201,12 +300,16 @@ public class AllRideShares extends android.app.Fragment {
             mAuth = FirebaseAuth.getInstance();
             mDatabaseLike.keepSynced(true);
 
+
+
         }
+
 
 
         public void setLeaving(String leaving) {
             TextView leaving_from = (TextView) mView.findViewById(R.id.comingFrom);
             leaving_from.setText(leaving);
+
         }
 
         public void setTitle(String title) {
@@ -217,6 +320,7 @@ public class AllRideShares extends android.app.Fragment {
         public void setDesc(String desc) {
             TextView post_desc = (TextView) mView.findViewById(R.id.post_desc);
             post_desc.setText(desc);
+
         }
 
         public void setImage(Context ctx, String image) {
@@ -224,6 +328,7 @@ public class AllRideShares extends android.app.Fragment {
             Picasso.with(ctx).load(image).into(post_image);
 
         }
+
 
 
         public void setuserName(String name) {
@@ -257,11 +362,14 @@ public class AllRideShares extends android.app.Fragment {
 
 
 
-
-
         public interface OnFragmentInteractionListener {
             // TODO: Update argument type and name
             void onFragmentInteraction(Uri uri);
         }
+
     }
+
+
+
+
 }

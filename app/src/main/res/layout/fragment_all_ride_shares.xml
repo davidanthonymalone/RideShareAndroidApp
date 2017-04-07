@@ -7,10 +7,26 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="479dp"
+            android:id="@+id/searchEditText"
+            android:layout_alignParentTop="true"
+            android:hint="Search" />
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/advertslist">
+            android:id="@+id/advertslist"
+            android:layout_marginTop="45dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
 
         </android.support.v7.widget.RecyclerView>
 
