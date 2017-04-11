@@ -16,8 +16,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -39,15 +41,15 @@ import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
 
 
-public class AllRideShares extends android.app.Fragment implements SearchView.OnQueryTextListener {
+public class SortyByCounty extends Fragment implements SearchView.OnQueryTextListener {
     public RecyclerView adsList;
     private FirebaseAuth mAuth;
     public FirebaseRecyclerAdapter<Advert, AdvertViewHolder> advertadapter;
     private FirebaseAuth.AuthStateListener mAuthListenter;
-    public DatabaseReference rideShareDatabase;
-    private DatabaseReference likeDatabase;
-    DatabaseReference rideShareDatabaseUsers;
-    private DatabaseReference databaseCurrentUser;
+    public DatabaseReference mDatabase;
+    private DatabaseReference mdatabbaseLike;
+    DatabaseReference getmDatabaseUsers;
+    private DatabaseReference mDatabaseCurrentUser;
     public SearchView searchView;
     private Query mQuery;
     public String d;
@@ -60,18 +62,20 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
     public   List<String> yourStringArray;
     public static Advert advert;
     ArrayList<Class<Advert>> arrayList = new ArrayList<>();
+    Spinner pickcounty;
+    public String spinnercity;
 
 
 
     View v;
 
 
-    public AllRideShares() {
+    public SortyByCounty() {
         // Required empty public constructor
     }
 
-    public static AllRideShares newInstance() {
-        AllRideShares fragment = new AllRideShares();
+    public static SortyByCounty newInstance() {
+        SortyByCounty fragment = new SortyByCounty();
         return fragment;
     }
 
@@ -88,11 +92,12 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_all_ride_shares, container, false);
+        v = inflater.inflate(R.layout.fragment_sortyby_county, container, false);
 
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
-        rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
-        rideShareDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                                      @Override
                                                      public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -117,17 +122,19 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
 
 
                                                  });
-        likeDatabase = FirebaseDatabase.getInstance().getReference().child("Likes");
+        mdatabbaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
         String currentUserId = MainActivity.tempUid;
-        databaseCurrentUser = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        mDatabaseCurrentUser = FirebaseDatabase.getInstance().getReference().child("RideShare");
 
         mAuth = FirebaseAuth.getInstance();
         setHasOptionsMenu(true);
 
         postedby = (TextView) v.findViewById(R.id.postedByTextView) ;
+        pickcounty = (Spinner) v.findViewById(R.id.spinner);
 
-        likeDatabase.keepSynced(true);
-        rideShareDatabase.keepSynced(true);
+
+        mdatabbaseLike.keepSynced(true);
+        mDatabase.keepSynced(true);
         // Inflate the layout for this fragment
         adsList = (RecyclerView) v.findViewById(R.id.advertslist);
         adsList.setHasFixedSize(true);
@@ -143,93 +150,106 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
     public void onStart() {
         super.onStart();
 
-
-        TextView allHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
-        allHeaderTextView.setText(R.string.AllRideShares);
-
-
-        query = rideShareDatabase.orderByChild("comingFrom");
-         advertadapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
-                Advert.class,
-                R.layout.advert_row,
-                AdvertViewHolder.class,
-                query
-
-
-        ) {
+        pickcounty.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            protected void populateViewHolder(AdvertViewHolder viewHolder, final Advert model, int position) {
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+                    String city = parent.getItemAtPosition(i).toString();
+                String TAG = "whoop";
+                Log.d(TAG, "onItemSelected: " + city);
+                query = mDatabase.orderByChild("city").equalTo(city);
+                advertadapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
+                        Advert.class,
+                        R.layout.advert_row,
+                        AdvertViewHolder.class,
+                        query
 
-                advert = model;
-                final String post_key = getRef(position).getKey();
-                viewHolder.setLeaving((model.getComingFrom()));
-                viewHolder.setTitle((model.getGoingTo()));
-                viewHolder.setDesc(model.getComingFrom());
-                viewHolder.setuserName(model.getUsername());
-                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-
-
-
-
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                ) {
                     @Override
-                    public void onClick(View v) {
+                    protected void populateViewHolder(AdvertViewHolder viewHolder, final Advert model, int position) {
+
+                        advert = model;
+                        final String post_key = getRef(position).getKey();
+                        viewHolder.setLeaving((model.getComingFrom()));
+                        viewHolder.setTitle((model.getGoingTo()));
+                        viewHolder.setDesc(model.getComingFrom());
+                        viewHolder.setuserName(model.getUsername());
+                        viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
 
 
-                        Fragment fragment;
-                        FragmentTransaction fragt = getFragmentManager().beginTransaction();
-                        fragt.replace(R.id.homeFrame, new SinglePostFragment()).addToBackStack("").commit();
-                        MainActivity.tempUid = post_key;
 
 
-                    }
-                });
-                viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mProcessLike = true;
-
-                        likeDatabase.addValueEventListener(new ValueEventListener() {
+                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
-
-                                yourStringArray  = dataSnapshot.getValue(t);
+                            public void onClick(View v) {
 
 
-                                if (mProcessLike) {
-                                    if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
-                                        likeDatabase.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
-                                        mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).removeValue();
-                                        rideShareDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                        mProcessLike = false;
+                                Fragment fragment;
+                                FragmentTransaction fragt = getFragmentManager().beginTransaction();
+                                fragt.replace(R.id.homeFrame, new SinglePostFragment()).addToBackStack("").commit();
+                                MainActivity.tempUid = post_key;
 
 
-
-                                    } else {
-                                        likeDatabase.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("RandomValue");
-                                        mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).setValue(model);
-                                        rideShareDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-
-                                        mProcessLike = false;
-                                    }
-                                }
                             }
-
+                        });
+                        viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                            public void onClick(View v) {
+                                mProcessLike = true;
+
+                                mdatabbaseLike.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
+
+                                        yourStringArray  = dataSnapshot.getValue(t);
+
+
+                                        if (mProcessLike) {
+                                            if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
+                                                mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
+                                                mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).removeValue();
+                                                mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                                mProcessLike = false;
+
+
+
+                                            } else {
+                                                mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("RandomValue");
+                                                mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).setValue(model);
+                                                mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+
+                                                mProcessLike = false;
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
 
                             }
                         });
 
 
                     }
-                });
+                };
 
+
+                adsList.setAdapter(advertadapter);
+                advertadapter.notifyDataSetChanged();
 
             }
-        };
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        TextView allHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
+        allHeaderTextView.setText(R.string.AllRideShares);
 
         adsList.setAdapter(advertadapter);
 
@@ -250,7 +270,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                AllRideShares ride = new AllRideShares();
+                SortyByCounty ride = new SortyByCounty();
 
 
                 String d = newText;

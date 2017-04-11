@@ -52,7 +52,8 @@
             android:layout_height="wrap_content"
             android:text="delete"
             android:visibility="gone"
-            android:textColor="@android:color/background_dark" />
+            android:textColor="@android:color/background_dark"
+            android:background="@color/hFontCol" />
 
         <TextView
             android:id="@+id/postedByIDText"

@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#db0003</color>
     <color name="cardview_light_background">#db0003</color>
+    <color name="black">#000000</color>
 
     <color name="colorPrimaryDark">#db0003</color>
     <color name="colorAccent">#FF4081</color>

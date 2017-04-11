@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -87,7 +88,8 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
     FirebaseAuth mAuth;
     EditText commmentedit;
     GoogleMap mMap;
-    public double comingFromLat, comingFromLng, goingToLat, goingToLng;
+    View v;
+    public double comingFromLat =0, comingFromLng =0, goingToLat =0 , goingToLng =0;
     static String currentUser;
     public static String createdBy;
     public static String commentCreator;
@@ -162,42 +164,43 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
         mDatabase.child(post_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String post_title = (String) dataSnapshot.child("comingFrom").getValue();
-                String goingTo = (String) dataSnapshot.child("goingTo").getValue();
-                String created = (String) dataSnapshot.child("username").getValue();
-                String post_desc = (String) dataSnapshot.child("desc").getValue();
-                String post_imdage = (String) dataSnapshot.child("image").getValue();
-                 post_uid = (String) dataSnapshot.child("uid").getValue();
-                comingFromLat = (double) dataSnapshot.child("comingFromLat").getValue();
-                comingFromLng = (double) dataSnapshot.child("comingFromLng").getValue();
-                goingToLat = (double) dataSnapshot.child("goingToLat").getValue();
-                goingToLng = (double) dataSnapshot.child("goingToLng").getValue();
+                if(dataSnapshot.exists()) {
+                    String post_title = (String) dataSnapshot.child("comingFrom").getValue();
+                    String goingTo = (String) dataSnapshot.child("goingTo").getValue();
+                    String created = (String) dataSnapshot.child("username").getValue();
+                    String post_desc = (String) dataSnapshot.child("desc").getValue();
+                    String post_imdage = (String) dataSnapshot.child("image").getValue();
+                    post_uid = (String) dataSnapshot.child("uid").getValue();
 
-                comingFromText.setText(post_title);
-                goingToText.setText(goingTo);
-                desc.setText(post_desc);
-                creadBy.setText(created);
-                creadBy.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(), post_uid, Toast.LENGTH_LONG).show();
-                        //MainActivity.tempUid = post_uid;
-                        Fragment fragment;
-                        FragmentTransaction fragt = getFragmentManager().beginTransaction();
-                        fragt.replace(R.id.homeFrame, new UsersProfile()).addToBackStack("").commit();
+                    comingFromLat = (double) dataSnapshot.child("comingFromLat").getValue();
+                    comingFromLng = (double) dataSnapshot.child("comingFromLng").getValue();
+                    goingToLat = (double) dataSnapshot.child("goingToLat").getValue();
+                    goingToLng = (double) dataSnapshot.child("goingToLng").getValue();
 
+                    comingFromText.setText(post_title);
+                    goingToText.setText(goingTo);
+                    desc.setText(post_desc);
+                    creadBy.setText(created);
+                    creadBy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getActivity(), post_uid, Toast.LENGTH_LONG).show();
+                            //MainActivity.tempUid = post_uid;
+                            Fragment fragment;
+                            FragmentTransaction fragt = getFragmentManager().beginTransaction();
+                            fragt.replace(R.id.homeFrame, new UsersProfile()).addToBackStack("").commit();
+
+
+                        }
+                    });
+
+                    Picasso.with(getActivity()).load(post_imdage).resize(500, 500).into(rideShareSingleImage);
+                    if (mAuth.getCurrentUser().getUid().equals(post_uid)) {
+                        mSingleRemoveButton.setVisibility(View.VISIBLE);
 
 
                     }
-                });
-
-                Picasso.with(getActivity()).load(post_imdage).resize(500, 500).into(rideShareSingleImage);
-                if(mAuth.getCurrentUser().getUid().equals(post_uid)){
-                    mSingleRemoveButton.setVisibility(View.VISIBLE);
-
-
                 }
-
             }
 
 
@@ -214,8 +217,18 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_singole_post, container, false);
+        if(v != null){
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null)
+                parent.removeView(v);
+        }
+        try{
+            v = inflater.inflate(R.layout.fragment_singole_post, container, false);
+
+        }catch(InflateException e){
+
+        }
+
         rideShareSingleImage = (ImageView) v.findViewById(R.id.imageView2);
         comingFromText = (TextView) v.findViewById(R.id.title);
         goingToText = (TextView) v.findViewById(R.id.goingToTextview);
@@ -269,6 +282,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot thisUser:dataSnapshot.getChildren()){
                             mUserDatabase.child(thisUser.getValue().toString()).child("LikedRideShares").child(thisPost).removeValue();
+
                         }
                     }
 

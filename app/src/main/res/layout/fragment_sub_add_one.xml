@@ -65,13 +65,14 @@
 
         <Button
             android:id="@+id/nextButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/searchRow"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:text="Next"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:background="@color/colorPrimary" />
 
         <TableRow
             android:id="@+id/searchRow"

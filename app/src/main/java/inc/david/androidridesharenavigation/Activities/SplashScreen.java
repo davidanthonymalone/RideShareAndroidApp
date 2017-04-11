@@ -20,10 +20,12 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_splash_screen);
 
+
+        //just lets the screen sleep for 3 seconds adn then launches the main acitivity.  This is the first activity to launch
         Thread sleepThread = new Thread(){
             public void run(){
                 try{
-                    sleep(1000);
+                    sleep(3000);
                 }catch(InterruptedException e){
                     e.printStackTrace();
                 }finally{

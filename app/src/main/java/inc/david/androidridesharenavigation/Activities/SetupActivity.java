@@ -19,33 +19,32 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import inc.david.androidridesharenavigation.R;
 
 public class SetupActivity extends AppCompatActivity {
 
-    private ImageButton mSetupImageBtn;
-    private EditText mNameField;
+    private ImageButton setUpImageBttn;
+    private EditText nameField;
     private Button profileButton;
     private static final int GALLERY_REQUEST = 1;
     private FirebaseAuth mAuth;
     private Uri mImageUri = null;
-    private DatabaseReference mDatabaseUsers;
+    private DatabaseReference rideShareDatabaseUsers;
     private ProgressDialog mProgress;
-    private StorageReference mStorageImage;
+    private StorageReference storageImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
         mAuth = FirebaseAuth.getInstance();
-        mStorageImage = FirebaseStorage.getInstance().getReference().child("Profile_images");
+        storageImage = FirebaseStorage.getInstance().getReference().child("Profile_images");
         mProgress = new ProgressDialog(this);
 
-        mSetupImageBtn = (ImageButton) findViewById(R.id.setupImage);
-        mNameField = (EditText) findViewById(R.id.editTextProfileName);
+        setUpImageBttn = (ImageButton) findViewById(R.id.setupImage);
+        nameField = (EditText) findViewById(R.id.editTextProfileName);
         profileButton = (Button) findViewById(R.id.profileSetupButton);
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        rideShareDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +52,7 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
-        mSetupImageBtn.setOnClickListener(new View.OnClickListener() {
+        setUpImageBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent galleryIntent = new Intent();
@@ -68,22 +67,22 @@ public class SetupActivity extends AppCompatActivity {
 
     private void startSetupAccount() {
 
-        final String name = mNameField.getText().toString().trim();
+        final String name = nameField.getText().toString().trim();
 
        final String user_id = mAuth.getCurrentUser().getUid();
         if(!TextUtils.isEmpty(name) && mImageUri != null){
             mProgress.setMessage("Setting up");
             mProgress.show();
 
-            StorageReference filepath = mStorageImage.child(mImageUri.getLastPathSegment());
+            StorageReference filepath = storageImage.child(mImageUri.getLastPathSegment());
 
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     String downloadUri = taskSnapshot.getDownloadUrl().toString();
-                     mDatabaseUsers.child(user_id).child("name").setValue(name);
-                    mDatabaseUsers.child(user_id).child("image").setValue(downloadUri);
+                     rideShareDatabaseUsers.child(user_id).child("name").setValue(name);
+                    rideShareDatabaseUsers.child(user_id).child("image").setValue(downloadUri);
                     mProgress.dismiss();
                     Intent setupIntent = new Intent(SetupActivity.this, MainActivity.class);
                     setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -116,7 +115,7 @@ public class SetupActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 mImageUri = result.getUri();
-                mSetupImageBtn.setImageURI(mImageUri);
+                setUpImageBttn.setImageURI(mImageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

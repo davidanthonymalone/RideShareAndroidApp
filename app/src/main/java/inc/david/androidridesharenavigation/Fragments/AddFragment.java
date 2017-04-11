@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,7 +25,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -48,7 +46,6 @@ import com.theartofdev.edmodo.cropper.CropImage;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddOne;
-import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddTwo;
 import inc.david.androidridesharenavigation.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -79,8 +76,9 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public static int noOfSeatsNumber;
     private static final int Gallery_Request = 1;
     public static FirebaseUser mCurrentUser;
+    public static DatabaseReference  sortedByCountyDatabase;
     public static StorageReference mStorage;
-    public static DatabaseReference mDatabase;
+    public static DatabaseReference rideShareDatabase;
     public static DatabaseReference mDatabaseUsers;
     private static final LatLngBounds WATERFORD_BAR_VIEW = new LatLngBounds(
             new LatLng(52.254539, -7.149922), new LatLng(52.254700, -7.100484));
@@ -93,6 +91,8 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public static String comingFrom;
     FrameLayout subAddFrame;
     public static FragmentManager fragmentManager;
+    private static final LatLngBounds RideShareBoundary = new LatLngBounds(
+            new LatLng(52.324925, -8.466647), new LatLng(52.547628, -6.313327));
 
     public AddFragment() {
         // Required empty public constructor
@@ -119,12 +119,12 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         mprogress = new ProgressDialog(getActivity());
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
-
+        sortedByCountyDatabase = FirebaseDatabase.getInstance().getReference().child("SortedByCounty");
 
         view = inflater.inflate(R.layout.fragment_add, container, false);
 
@@ -207,8 +207,12 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // Get a URL to the uploaded content
+
+
+
                     final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    final DatabaseReference newPost = mDatabase.push();
+
+                        final DatabaseReference newPost = rideShareDatabase.push();
 
 
 
@@ -234,13 +238,14 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                             newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         mprogress.dismiss();
                                         Intent intent = new Intent(getActivity(), MainActivity.class);
                                         getActivity().startActivity(intent);
 
 
                                     }
+
                                 }
                             });
 

@@ -11,7 +11,7 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Advert {
     private String comingFrom,  goingTo, username,
-            image, uid;
+            image, uid, city;
     private int advertid;
     private Map<String,String> comments = new HashMap<String, String>();
     private Map<String,String> likedBy = new HashMap<>();
@@ -38,6 +38,14 @@ public class Advert {
 
     public void setUsersAccepted(Map<String, String> usersAccepted) {
         this.usersAccepted = usersAccepted;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     Map<String,String> usersAccepted = new HashMap<>();
@@ -152,7 +160,7 @@ public class Advert {
         this.advertid = advertid;
     }
 
-    public Advert(String comingFrom, int advertid, String username, String goingTo, String image, String uid,
+    public Advert(String comingFrom, String city, int advertid, String username, String goingTo, String image, String uid,
                   long goingToLat, long goingToLng, long comingFromLat, long comingFromLng,
                   int seatsRemaining, int noOfSeats, Map<String,String> comments, Map<String,String> likedBy, Map<String,String> usersAccepted) {
         this.comingFrom = comingFrom;
@@ -161,6 +169,7 @@ public class Advert {
         this.image = image;
         this.uid = uid;
         this.advertid = advertid;
+        this.city = city;
 
         this.goingToLat = goingToLat;
         this.goingToLng = goingToLng;

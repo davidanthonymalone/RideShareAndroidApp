@@ -41,26 +41,16 @@
             android:layout_marginTop="12dp"
             android:hint="Search"></fragment>
 
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/place_fragment_2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/instructions_add_pic"
-            android:textAlignment="center" />
-
         <Button
             android:id="@+id/finalNextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView8"
-            android:background="@color/colorPrimary"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="21dp"
             android:text="Next"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:background="@color/colorPrimary" />
 
     </RelativeLayout>
 
@@ -74,7 +64,7 @@
         <TextView
             android:id="@+id/textView9"
             android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:gravity="center_vertical"
@@ -85,17 +75,17 @@
         <TextView
             android:id="@+id/comingFromTV"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/textView9"
             android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:paddingLeft="10dp" />
 
         <TextView
             android:id="@+id/textView11"
             android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView9"
             android:gravity="center_vertical"
@@ -106,7 +96,7 @@
         <TextView
             android:id="@+id/goingToTVSummary"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_below="@+id/textView9"
             android:layout_toEndOf="@+id/textView9"
             android:gravity="center_vertical"
@@ -116,7 +106,7 @@
         <TextView
             android:id="@+id/textView13"
             android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView11"
             android:gravity="center_vertical"
@@ -127,7 +117,7 @@
         <TextView
             android:id="@+id/noOfSeatsTVSummary"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:layout_below="@+id/textView11"
             android:layout_toEndOf="@+id/textView13"
             android:gravity="center_vertical"
@@ -143,7 +133,7 @@
             android:layout_marginTop="29dp"
             android:background="@color/colorPrimary"
             android:text="Add RideShare Add"
-            android:textColor="@color/cardview_light_background"
+            android:textColor="@android:color/background_dark"
             android:visibility="visible" />
     </RelativeLayout>
 

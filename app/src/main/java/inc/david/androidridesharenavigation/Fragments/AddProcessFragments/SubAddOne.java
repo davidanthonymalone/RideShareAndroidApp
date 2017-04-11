@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -20,11 +21,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.R;
 
+import static inc.david.androidridesharenavigation.R.id.auto;
 import static inc.david.androidridesharenavigation.R.id.subAddFrame;
 
 /**
@@ -36,8 +40,11 @@ public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSe
     Button startButton, nextButton;
     TextView instructionsTV, fromWhereTV, noOfSeatsTV;
     Spinner noOfSeatsSpinner;
+    EditText finaldetails;
     TableRow searchRow;
     PlaceAutocompleteFragment autocompleteFragment;
+    private static final LatLngBounds RideShareBoundary = new LatLngBounds(
+            new LatLng(52.324925, -8.466647), new LatLng(52.547628, -6.313327));
     
     public SubAddOne() {
         // Required empty public constructor
@@ -52,6 +59,7 @@ public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSe
         
         startButton = (Button)view.findViewById(R.id.startButton);
         nextButton = (Button)view.findViewById(R.id.nextButton);
+
 
         instructionsTV = (TextView)view.findViewById(R.id.instructionsTV2);
         noOfSeatsTV = (TextView)view.findViewById(R.id.noSeatsTV);
@@ -68,6 +76,7 @@ public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSe
 
         noOfSeatsSpinner.setOnItemSelectedListener(this);
         autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setBoundsBias(RideShareBoundary);
         startButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
                 

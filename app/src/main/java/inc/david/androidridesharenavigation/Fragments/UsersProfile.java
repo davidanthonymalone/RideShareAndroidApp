@@ -55,6 +55,7 @@ public class UsersProfile
     private FirebaseAuth mAuth;
     private Uri mImageUri = null;
     Button button;
+    public String number;
     private Double stars;
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog mProgress;
@@ -65,6 +66,7 @@ public class UsersProfile
     private DatabaseReference getmDatabaseShowComments;
     public String photoUrl;
     private RatingBar ratings, avgRating;
+    DatabaseReference rating;
     View v;
     FirebaseUser user;
 
@@ -95,13 +97,13 @@ public class UsersProfile
         mStorageImage = FirebaseStorage.getInstance().getReference().child("Profile_images");
         mProgress = new ProgressDialog(getActivity());
         ratings = (RatingBar) v.findViewById(R.id.ratingBar1);
+        rating = FirebaseDatabase.getInstance().getReference().child("Users").child(MainActivity.tempUid).child("rating");
 
         commentList = (RecyclerView) v.findViewById(R.id.userRecycler);
         commentList.setLayoutManager(new LinearLayoutManager(getActivity()));
         commentList.setHasFixedSize(true);
         feedback = (EditText) v.findViewById(R.id.feedbackEdit);
 
-        avgRating = (RatingBar) v.findViewById(R.id.avgRating);
 
 
 
@@ -120,13 +122,15 @@ public class UsersProfile
                 stars = Double.parseDouble(rating);
                 Toast.makeText(getActivity(), rating, Toast.LENGTH_LONG).show();
                 final DatabaseReference newPost = mDatabaseUsers.child("Feedback").push();
+                final DatabaseReference newPost1 = mDatabaseUsers;
+
                 String advert = MainActivity.tempUid;
                 String name = mAuth.getCurrentUser().getEmail();
                 newPost.child("comment").setValue(comment);
                 newPost.child("postedby").setValue(name);
                 newPost.child("rating").setValue(stars);
 
-                feedback.setText("");
+
 
             }
         });
@@ -171,6 +175,7 @@ public class UsersProfile
         FragmentTransaction fragt = getFragmentManager().beginTransaction();
         fragt.replace(R.id.homeFrame, new AllRideShares()).addToBackStack("").commit();
     }
+
 
     @Override
     public void onStart() {

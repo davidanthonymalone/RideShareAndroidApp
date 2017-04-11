@@ -2,15 +2,11 @@ package inc.david.androidridesharenavigation.Activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.SearchManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,7 +14,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,24 +32,27 @@ import java.util.ArrayList;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.Fragments.AllRideShares;
 import inc.david.androidridesharenavigation.Fragments.LikedRideShares;
-import inc.david.androidridesharenavigation.Fragments.MapsActivity2;
 import inc.david.androidridesharenavigation.Fragments.Profile;
+import inc.david.androidridesharenavigation.Fragments.SortyByCounty;
 import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
+
+import static android.R.attr.fragment;
 
 
 public class MainActivity extends Base
         implements NavigationView.OnNavigationItemSelectedListener, AllRideShares.OnFragmentInteractionListener, SearchView.OnQueryTextListener {
     FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
-    DatabaseReference mDatabaseUsers;
-    FirebaseAuth.AuthStateListener mAuthListenter;
+    DatabaseReference rideShareDatabase;
+    DatabaseReference rideShareUsersDatabase;
+    FirebaseAuth.AuthStateListener authStateListener;
     FirebaseUser currentUSer;
     public SearchView searchView;
     public String newText;
     public static String d = null;
     public ArrayList <Advert> arrayList = new ArrayList<>();
     public static String tempUid = null;
+    public FragmentTransaction fragt = getFragmentManager().beginTransaction();
     TextView t;
 
     @Override
@@ -62,20 +60,26 @@ public class MainActivity extends Base
         super.onCreate(savedInstanceState);
 
 
+
+        //sets layout for main activity which will contain fragments
         setContentView(R.layout.activity_main);
 
 
-
+        // launches toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-
+        //gets instance of google ath
         mAuth = FirebaseAuth.getInstance();
+        //gets current user details
         currentUSer = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
-        mDatabase.keepSynced(true);
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
-        mDatabaseUsers.keepSynced(true);
-        mAuthListenter = new FirebaseAuth.AuthStateListener() {
+        //gets fdatabasees and persistence with keep sycnced
+        rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        rideShareDatabase.keepSynced(true);
+        rideShareUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        rideShareUsersDatabase.keepSynced(true);
+
+        // Auth listener is waiting for a user to login
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() == null) {
@@ -93,11 +97,18 @@ public class MainActivity extends Base
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Fragment fragment;
+                FragmentTransaction fragt = getFragmentManager().beginTransaction();
+                fragment = AllRideShares.newInstance();
+                fragt.replace(R.id.homeFrame, fragment);
+                fragt.addToBackStack(null);
+                fragt.commit();
+
             }
         });
 
+
+        // inflates the drawer layout and gets the layout from the xml
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -140,18 +151,21 @@ public class MainActivity extends Base
     @Override
     protected void onStart() {
         super.onStart();
+        //checks if user exist
         checkUserExists();
 
-        mAuth.addAuthStateListener(mAuthListenter);
+        mAuth.addAuthStateListener(authStateListener);
 
     }
+
+    // method just checking to see if user exists when main page is open
     private void checkUserExists() {
 
 
         if (mAuth.getCurrentUser() != null) {
 
             final String user_id = mAuth.getCurrentUser().getUid();
-            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            rideShareUsersDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!dataSnapshot.hasChild(user_id)) {
@@ -178,6 +192,8 @@ public class MainActivity extends Base
 
 
 
+
+        // navigation drawer and layout for the nav layout
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -185,7 +201,7 @@ public class MainActivity extends Base
 
         int id = item.getItemId();
         Fragment fragment;
-        FragmentTransaction fragt = getFragmentManager().beginTransaction();
+
 
         if (id == R.id.nav_home) {
             fragment = AllRideShares.newInstance();
@@ -207,7 +223,14 @@ public class MainActivity extends Base
 
 
 
-        }else if (id == R.id.nav_share){
+        } else if (id == R.id.sort) {
+            fragt.replace(R.id.homeFrame, new SortyByCounty()).addToBackStack("").commit();
+
+
+
+        }
+
+        else if (id == R.id.nav_share){
             logout();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

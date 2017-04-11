@@ -2,6 +2,8 @@ package inc.david.androidridesharenavigation.Fragments.AddProcessFragments;
 
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -19,6 +21,8 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +32,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
@@ -40,7 +48,7 @@ import static inc.david.androidridesharenavigation.Fragments.AddFragment.goingTo
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.goingToLat;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.goingToLng;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mCurrentUser;
-import static inc.david.androidridesharenavigation.Fragments.AddFragment.mDatabase;
+import static inc.david.androidridesharenavigation.Fragments.AddFragment.rideShareDatabase;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mDatabaseUsers;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mImageUri;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mprogress;
@@ -56,6 +64,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
     Button finalNextButton, mSubmitBtn;
     TextView instructionsTV2, comingFromTV, goingToTV, noOfSeatsTV;
     PlaceAutocompleteFragment autocompleteFragment;
+    private static final LatLngBounds RideShareBoundary = new LatLngBounds(
+            new LatLng(52.324925, -8.466647), new LatLng(52.547628, -6.313327));
 
     public SubAddTwo() {
         // Required empty public constructor
@@ -83,6 +93,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.place_fragment_2);
         autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setBoundsBias(RideShareBoundary);
 
         return view;
     }
@@ -119,7 +130,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             // Get a URL to the uploaded content
                             final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            final DatabaseReference newPost = mDatabase.push();
+
+
+                            final DatabaseReference newPost = rideShareDatabase.push();
 
 
 
@@ -127,8 +140,13 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                   if (comingFrom.contains("Waterford")){
+
+                                       String cityName = "Waterford";
                                     newPost.child("noOfSeats").setValue(noOfSeatsNumber);
                                     newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                    newPost.child("city").setValue(cityName);
 
                                     newPost.child("goingTo").setValue(goingTo);
                                     newPost.child("goingToLat").setValue(goingToLat);
@@ -152,6 +170,219 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                             }
                                         }
                                     });
+                                }else if (comingFrom.contains("Kilkenny")){
+                                       String city = "Kilkenny";
+
+                                       newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                                       newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                       newPost.child("city").setValue(city);
+
+
+
+                                       newPost.child("goingTo").setValue(goingTo);
+                                       newPost.child("goingToLat").setValue(goingToLat);
+                                       newPost.child("goingToLng").setValue(goingToLng);
+
+                                       newPost.child("comingFrom").setValue(comingFrom);
+                                       newPost.child("comingFromLat").setValue(comingFromLat);
+                                       newPost.child("comingFromLng").setValue(comingFromLng);
+
+                                       newPost.child("image").setValue(downloadUrl.toString());
+                                       newPost.child("uid").setValue(mCurrentUser.getUid());
+                                       newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   mprogress.dismiss();
+                                                   Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                   getActivity().startActivity(intent);
+
+
+                                               }
+                                           }
+                                       });
+
+
+
+
+
+                                   }else if (comingFrom.contains("Wexford")){
+                                       String city = "Wexford";
+
+                                       newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                                       newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                       newPost.child("city").setValue(city);
+
+
+
+                                       newPost.child("goingTo").setValue(goingTo);
+                                       newPost.child("goingToLat").setValue(goingToLat);
+                                       newPost.child("goingToLng").setValue(goingToLng);
+
+                                       newPost.child("comingFrom").setValue(comingFrom);
+                                       newPost.child("comingFromLat").setValue(comingFromLat);
+                                       newPost.child("comingFromLng").setValue(comingFromLng);
+
+                                       newPost.child("image").setValue(downloadUrl.toString());
+                                       newPost.child("uid").setValue(mCurrentUser.getUid());
+                                       newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   mprogress.dismiss();
+                                                   Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                   getActivity().startActivity(intent);
+
+
+                                               }
+                                           }
+                                       });
+
+
+
+
+
+                                   }else if (comingFrom.contains("Cork")){
+                                       String city = "Cork";
+
+                                       newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                                       newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                       newPost.child("city").setValue(city);
+
+
+
+                                       newPost.child("goingTo").setValue(goingTo);
+                                       newPost.child("goingToLat").setValue(goingToLat);
+                                       newPost.child("goingToLng").setValue(goingToLng);
+
+                                       newPost.child("comingFrom").setValue(comingFrom);
+                                       newPost.child("comingFromLat").setValue(comingFromLat);
+                                       newPost.child("comingFromLng").setValue(comingFromLng);
+
+                                       newPost.child("image").setValue(downloadUrl.toString());
+                                       newPost.child("uid").setValue(mCurrentUser.getUid());
+                                       newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   mprogress.dismiss();
+                                                   Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                   getActivity().startActivity(intent);
+
+
+                                               }
+                                           }
+                                       });
+
+
+
+
+
+                                   }else if (comingFrom.contains("Tipperary")){
+                                       String city = "Tipperary";
+
+                                       newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                                       newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                       newPost.child("city").setValue(city);
+
+
+
+                                       newPost.child("goingTo").setValue(goingTo);
+                                       newPost.child("goingToLat").setValue(goingToLat);
+                                       newPost.child("goingToLng").setValue(goingToLng);
+
+                                       newPost.child("comingFrom").setValue(comingFrom);
+                                       newPost.child("comingFromLat").setValue(comingFromLat);
+                                       newPost.child("comingFromLng").setValue(comingFromLng);
+
+                                       newPost.child("image").setValue(downloadUrl.toString());
+                                       newPost.child("uid").setValue(mCurrentUser.getUid());
+                                       newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   mprogress.dismiss();
+                                                   Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                   getActivity().startActivity(intent);
+
+
+                                               }
+                                           }
+                                       });
+
+
+
+
+
+                                   }else if (comingFrom.contains("Carlow")){
+                                       String city = "Carlow";
+
+                                       newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                                       newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                       newPost.child("city").setValue(city);
+
+
+
+                                       newPost.child("goingTo").setValue(goingTo);
+                                       newPost.child("goingToLat").setValue(goingToLat);
+                                       newPost.child("goingToLng").setValue(goingToLng);
+
+                                       newPost.child("comingFrom").setValue(comingFrom);
+                                       newPost.child("comingFromLat").setValue(comingFromLat);
+                                       newPost.child("comingFromLng").setValue(comingFromLng);
+
+                                       newPost.child("image").setValue(downloadUrl.toString());
+                                       newPost.child("uid").setValue(mCurrentUser.getUid());
+                                       newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   mprogress.dismiss();
+                                                   Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                   getActivity().startActivity(intent);
+
+
+                                               }
+                                           }
+                                       });
+
+
+
+
+
+                                   }else{
+
+
+                                       newPost.child("noOfSeats").setValue(noOfSeatsNumber);
+                                       newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
+                                       newPost.child("goingTo").setValue(goingTo);
+                                       newPost.child("goingToLat").setValue(goingToLat);
+                                       newPost.child("goingToLng").setValue(goingToLng);
+
+                                       newPost.child("comingFrom").setValue(comingFrom);
+                                       newPost.child("comingFromLat").setValue(comingFromLat);
+                                       newPost.child("comingFromLng").setValue(comingFromLng);
+
+                                       newPost.child("image").setValue(downloadUrl.toString());
+                                       newPost.child("uid").setValue(mCurrentUser.getUid());
+                                       newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   mprogress.dismiss();
+                                                   Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                   getActivity().startActivity(intent);
+
+
+                                               }
+                                           }
+                                       });
+
+
+
+
+
+                                   }
                                 }
 
                                 @Override

@@ -17,15 +17,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import inc.david.androidridesharenavigation.Fragments.AllRideShares;
 import inc.david.androidridesharenavigation.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText mName, mEmail, mPassword;
-    private Button mRegButton;
+    private EditText nameField, emailField, passwordField;
+    private Button regButton;
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private DatabaseReference rideShareDatabase;
     private ProgressDialog mProgress;
 
 
@@ -35,14 +34,14 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        mName = (EditText) findViewById(R.id.editTextName);
-        mEmail = (EditText) findViewById(R.id.editTextEmail);
-        mPassword = (EditText) findViewById(R.id.editTextPassword);
-        mRegButton = (Button) findViewById(R.id.buttonRegister);
+        nameField = (EditText) findViewById(R.id.editTextName);
+        emailField = (EditText) findViewById(R.id.editTextEmail);
+        passwordField = (EditText) findViewById(R.id.editTextPassword);
+        regButton = (Button) findViewById(R.id.buttonRegister);
 
-        mRegButton.setOnClickListener(new View.OnClickListener() {
+        regButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -58,9 +57,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void startRegister() {
-        final String name = mName.getText().toString().trim();
-        String email = mEmail.getText().toString().trim();
-        String password = mPassword.getText().toString().trim();
+        final String name = nameField.getText().toString().trim();
+        String email = emailField.getText().toString().trim();
+        String password = passwordField.getText().toString().trim();
 
         if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
             mProgress.setMessage("Signing up to RideShare");
@@ -71,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         String user_id = mAuth.getCurrentUser().getUid();
-                        DatabaseReference current_user_db =    mDatabase.child(user_id);
+                        DatabaseReference current_user_db =    rideShareDatabase.child(user_id);
                         current_user_db.child("name").setValue(name);
                         current_user_db.child("image").setValue("default");
                         mProgress.dismiss();

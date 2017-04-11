@@ -1,6 +1,5 @@
 package inc.david.androidridesharenavigation.Activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +38,10 @@ import inc.david.androidridesharenavigation.R;
 import static android.widget.Toast.LENGTH_LONG;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText mLoginEmailField, mLoginPasswordField;
-    private Button mLoginButton, mButtonR;
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabaseUsers;
+    private EditText loginEmailField, loginPasswordField;
+    private Button loginButton, button;
+    private FirebaseAuth auth;
+    private DatabaseReference rideShareDatabaseUsers;
 
 
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -59,7 +58,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mAuth = FirebaseAuth.getInstance();
+
+        //gets the instance of authentication
+        auth = FirebaseAuth.getInstance();
+        //listens for authenticaion
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -72,15 +74,21 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         };
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
-        mDatabaseUsers.keepSynced(true);
-        mLoginEmailField = (EditText) findViewById(R.id.editTextEmailLogin);
-        mLoginPasswordField = (EditText) findViewById(R.id.editTextPasswordLogin);
+        //gets instance of database users
+        rideShareDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+
+
+        //persistence for the database
+        rideShareDatabaseUsers.keepSynced(true);
+        //binds the data to the widgets
+        loginEmailField = (EditText) findViewById(R.id.editTextEmailLogin);
+        loginPasswordField = (EditText) findViewById(R.id.editTextPasswordLogin);
         mGoogleBtn = (SignInButton) findViewById(R.id.googleID);
-        mLoginButton = (Button) findViewById(R.id.buttonLogin);
+        loginButton = (Button) findViewById(R.id.buttonLogin);
 
-        mButtonR = (Button) findViewById(R.id.buttonRegister);
+        button = (Button) findViewById(R.id.buttonRegister);
 
+        //listener for google sign in button and launches method when clicked
         mGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
-        mButtonR.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -115,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkLogin();
@@ -180,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
         checkUserExists();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -201,11 +209,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkLogin() {
 
-        String email = mLoginEmailField.getText().toString().trim();
-        String password = mLoginPasswordField.getText().toString().trim();
+        String email = loginEmailField.getText().toString().trim();
+        String password = loginPasswordField.getText().toString().trim();
 
         if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
@@ -225,10 +233,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkUserExists() {
         try{
-        if(mAuth.getCurrentUser() != null){
+        if(auth.getCurrentUser() != null){
 
-            final String user_id = mAuth.getCurrentUser().getUid();
-            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            final String user_id = auth.getCurrentUser().getUid();
+            rideShareDatabaseUsers.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.hasChild(user_id)){
