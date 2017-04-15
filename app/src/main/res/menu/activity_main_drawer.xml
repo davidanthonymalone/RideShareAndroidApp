@@ -19,10 +19,7 @@
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_menu_manage"
             android:title="Profile" />
-        <item
-            android:id="@+id/nav_share"
-            android:icon="@drawable/ic_menu_share"
-            android:title="SignOut" />
+
         <item
             android:id="@+id/sort"
             android:icon="@drawable/ic_menu_share"
@@ -32,6 +29,18 @@
 
     </group>
 
+    <item android:title="Sign Out &amp; About Us">
+        <menu>
+            <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="SignOut" />
+            <item
+                android:id="@+id/nav_aboutus"
+                android:icon="@drawable/ic_menu_share"
+                android:title="About Us" />
+        </menu>
+    </item>
 
 
 </menu>

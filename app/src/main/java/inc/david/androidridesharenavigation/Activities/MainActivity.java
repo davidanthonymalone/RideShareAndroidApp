@@ -29,6 +29,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import inc.david.androidridesharenavigation.Fragments.AboutUs;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.Fragments.AllRideShares;
 import inc.david.androidridesharenavigation.Fragments.LikedRideShares;
@@ -52,8 +53,10 @@ public class MainActivity extends Base
     public static String d = null;
     public ArrayList <Advert> arrayList = new ArrayList<>();
     public static String tempUid = null;
-    public FragmentTransaction fragt = getFragmentManager().beginTransaction();
+
     TextView t;
+    public static String thisPostUID = null;
+    public static String postToBeEdited = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +130,6 @@ public class MainActivity extends Base
             Picasso.with(this).load(currentUSer.getPhotoUrl()).into(image);
         }
 
-
-
-
         navigationView.setNavigationItemSelectedListener(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         AllRideShares fragment = AllRideShares.newInstance();
@@ -198,7 +198,7 @@ public class MainActivity extends Base
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-
+         FragmentTransaction fragt = getFragmentManager().beginTransaction();
         int id = item.getItemId();
         Fragment fragment;
 
@@ -225,6 +225,11 @@ public class MainActivity extends Base
 
         } else if (id == R.id.sort) {
             fragt.replace(R.id.homeFrame, new SortyByCounty()).addToBackStack("").commit();
+
+
+
+        }else if (id == R.id.nav_aboutus) {
+            fragt.replace(R.id.homeFrame, new AboutUs()).addToBackStack("").commit();
 
 
 

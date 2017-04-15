@@ -1,6 +1,7 @@
 package inc.david.androidridesharenavigation.Fragments;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -56,8 +57,12 @@ import java.util.ArrayList;
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Adapter.CommentList;
 import inc.david.androidridesharenavigation.Adapter.CommentsAdapter;
+import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddOne;
 import inc.david.androidridesharenavigation.Models.Comment;
 import inc.david.androidridesharenavigation.R;
+
+import static inc.david.androidridesharenavigation.Activities.MainActivity.postToBeEdited;
+import static inc.david.androidridesharenavigation.Activities.MainActivity.thisPostUID;
 
 
 public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
@@ -76,6 +81,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
     private ImageView rideShareSingleImage;
     private TextView comingFromText, desc, goingToText;
     Button commentB;
+    public static Button editButton;
     public String post_uid;
     TextView creadBy;
     Location mLastLocation;
@@ -91,6 +97,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
     View v;
     public double comingFromLat =0, comingFromLng =0, goingToLat =0 , goingToLng =0;
     static String currentUser;
+    private TextView additionalcomm;
     public static String createdBy;
     public static String commentCreator;
     public static ArrayList<CommentList> commentsList = new ArrayList<>();
@@ -98,6 +105,8 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
     public static TextView remainingSeats;
     DatabaseReference likedByDatabase;
     MapFragment map;
+    String post_key = MainActivity.tempUid;
+    FragmentManager fragmentManager = getFragmentManager();
 
     private final int[] MAP_TYPES = {
             GoogleMap.MAP_TYPE_SATELLITE,
@@ -168,11 +177,13 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
                     String post_title = (String) dataSnapshot.child("comingFrom").getValue();
                     String goingTo = (String) dataSnapshot.child("goingTo").getValue();
                     String created = (String) dataSnapshot.child("username").getValue();
+                    String addcomments = (String) dataSnapshot.child("additionalComments").getValue();
                     String post_desc = (String) dataSnapshot.child("desc").getValue();
                     String post_imdage = (String) dataSnapshot.child("image").getValue();
                     post_uid = (String) dataSnapshot.child("uid").getValue();
 
                     comingFromLat = (double) dataSnapshot.child("comingFromLat").getValue();
+                    additionalcomm.setText(addcomments);
                     comingFromLng = (double) dataSnapshot.child("comingFromLng").getValue();
                     goingToLat = (double) dataSnapshot.child("goingToLat").getValue();
                     goingToLng = (double) dataSnapshot.child("goingToLng").getValue();
@@ -232,8 +243,15 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
         rideShareSingleImage = (ImageView) v.findViewById(R.id.imageView2);
         comingFromText = (TextView) v.findViewById(R.id.title);
         goingToText = (TextView) v.findViewById(R.id.goingToTextview);
+        additionalcomm = (TextView) v.findViewById(R.id.additionalcomments) ;
         commentB = (Button) v.findViewById(R.id.commentButton);
         remainingSeats = (TextView)v.findViewById(R.id.remainingSeats);
+        editButton = (Button)v.findViewById(R.id.editButton);
+
+        Log.v("SPFragment", "UserID: "+mAuth.getCurrentUser().getUid());
+        Log.v("SPFragment", "PostID: "+post_uid);
+        showEditButton();
+
         seatsLeft();
 
         View mapOverlay = (View) v.findViewById(R.id.mapz);
@@ -343,6 +361,18 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                postToBeEdited = thisPostUID;
+                FragmentTransaction fragt = getFragmentManager().beginTransaction();
+                fragt.replace(R.id.homeFrame, new AddFragment()).addToBackStack("").commit();
+
+            }
+        });
+
         com.google.android.gms.maps.MapFragment mapFragment = (com.google.android.gms.maps.MapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapz);
         mapFragment.getMapAsync(this);
         commentList = (ListView) v.findViewById(R.id.commentRecyclerList);
@@ -364,6 +394,12 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
                 if(dataSnapshot.getValue()!=null) {
                     Log.v("SPFragment", "seatsLeftDatabase Query Snapshot- "+dataSnapshot.getValue());
                     remainingSeats.setText("Seats Remaining: " + dataSnapshot.getValue().toString());
+
+                    int seatsLeft = Integer.parseInt(dataSnapshot.getValue().toString());
+                    if(seatsLeft<1){
+                        commentB.setVisibility(View.GONE);
+                        commmentedit.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -371,6 +407,33 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
             public void onCancelled(DatabaseError databaseError) {
 
             }
+        });
+
+
+
+    }
+
+    public void showEditButton(){
+
+        mDatabase.child(thisPostUID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    post_uid = (String) dataSnapshot.child("uid").getValue();
+
+                    if(mAuth.getCurrentUser().getUid().equals(post_uid)) {
+                        editButton.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
         });
 
     }

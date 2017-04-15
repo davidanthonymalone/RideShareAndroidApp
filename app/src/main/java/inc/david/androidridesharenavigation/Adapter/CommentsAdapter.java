@@ -33,6 +33,7 @@ import inc.david.androidridesharenavigation.R;
 import static inc.david.androidridesharenavigation.Fragments.SinglePostFragment.commentCreator;
 import static inc.david.androidridesharenavigation.Fragments.SinglePostFragment.commentList;
 import static inc.david.androidridesharenavigation.Fragments.SinglePostFragment.commentsAdapter;
+import static inc.david.androidridesharenavigation.Fragments.SinglePostFragment.editButton;
 
 
 public class CommentsAdapter extends BaseAdapter {
@@ -74,6 +75,7 @@ public class CommentsAdapter extends BaseAdapter {
         TextView commentText;
         Button acceptButton;
         Button deleteButton;
+        Button editButton;
         TextView postedByIDText;
         TextView acceptedTextView;
         TextView statusTextView;
@@ -109,6 +111,7 @@ public class CommentsAdapter extends BaseAdapter {
             holder.postedByIDText = (TextView)v.findViewById(R.id.postedByIDText);
             holder.acceptButton = (Button)v.findViewById(R.id.acceptButton);
             holder.deleteButton = (Button)v.findViewById(R.id.deleteCommentButton);
+            holder.editButton = (Button)v.findViewById(R.id.editButton);
             holder.acceptedTextView = (TextView)v.findViewById(R.id.acceptedTextView);
             holder.statusTextView = (TextView)v.findViewById(R.id.statusTextView);
             v.setTag(holder);
@@ -125,19 +128,18 @@ public class CommentsAdapter extends BaseAdapter {
             holder.postedByIDText.setText(commentList.getPostedByIDText());
             holder.statusTextView.setText(commentList.getAccepted());
 
-
-
-            //Show Delete button if current user is post creator
+            //Show Delete and Edit buttons if current user is post creator
             if(mAuth.getCurrentUser().getEmail().equals(commentList.getPostedBy())) {
                 holder.deleteButton.setVisibility(View.VISIBLE);
             }
 
             //Show Accept Button if the current user is ad creator, but don't show Accept if
-            //they are also Post creator, can't accept their own post
+            //they are also Post creator, can't accept their own post (PS also edit button)
             if(SinglePostFragment.createdBy.equals(mAuth.getCurrentUser().getUid()) &&
                     !mAuth.getCurrentUser().getEmail().equals(commentList.getPostedBy())){
                 holder.acceptButton.setVisibility(View.VISIBLE);
             }
+
 
             //Replace the comment textview with accepted message, then hide both buttons
             if(commentList.getAccepted().contains("Accepted")){
@@ -181,6 +183,7 @@ public class CommentsAdapter extends BaseAdapter {
                             int seatsTaken = (int) acceptedUsers;
                             SinglePostFragment.remainingSeats.setText("Seats Remaining:"+(remainingSeats-seatsTaken));
                             seatsRemainingDatabase.setValue(remainingSeats-seatsTaken);
+
 
                             SinglePostFragment.getComments();
                         }

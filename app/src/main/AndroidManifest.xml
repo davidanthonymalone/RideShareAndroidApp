@@ -77,6 +77,8 @@
             android:name=".Activities.MainActivity"
             android:label="@string/title_activity_splash_screen"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppTheme.NoActionBar" />
 
 

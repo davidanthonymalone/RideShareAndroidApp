@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -49,6 +51,7 @@ import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAdd
 import inc.david.androidridesharenavigation.R;
 
 import static android.app.Activity.RESULT_OK;
+import static inc.david.androidridesharenavigation.Activities.MainActivity.postToBeEdited;
 
 
 public class AddFragment extends android.app.Fragment implements AdapterView.OnItemSelectedListener,
@@ -93,6 +96,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public static FragmentManager fragmentManager;
     private static final LatLngBounds RideShareBoundary = new LatLngBounds(
             new LatLng(52.324925, -8.466647), new LatLng(52.547628, -6.313327));
+    public static String additionalComments;
 
     public AddFragment() {
         // Required empty public constructor
@@ -170,6 +174,8 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
 
 
 
+
+
         return view;
 
     }
@@ -191,92 +197,6 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-    private void startPosting() {
-        mprogress.setMessage("Adding Now");
-
-        if(noOfSeatsSelected != null) {
-            noOfSeatsNumber = Integer.parseInt(noOfSeatsSelected);
-        }
-        // final String desc_val = goingToText.getText().toString().trim();
-        if(!TextUtils.isEmpty(comingFrom)  && mImageUri != null){
-            mprogress.show();
-
-            StorageReference filepath = mStorage.child("RideShare").child(mImageUri.getLastPathSegment());
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Get a URL to the uploaded content
-
-
-
-                    final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                        final DatabaseReference newPost = rideShareDatabase.push();
-
-
-
-
-                    mDatabaseUsers.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            newPost.child("noOfSeats").setValue(noOfSeatsNumber);
-                            newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
-
-                            newPost.child("goingTo").setValue(goingTo);
-                            newPost.child("goingToLat").setValue(goingToLat);
-                            newPost.child("goingToLng").setValue(goingToLng);
-
-                            newPost.child("comingFrom").setValue(comingFrom);
-                            newPost.child("comingFromLat").setValue(comingFromLat);
-                            newPost.child("comingFromLng").setValue(comingFromLng);
-
-
-
-                            newPost.child("image").setValue(downloadUrl.toString());
-                            newPost.child("uid").setValue(mCurrentUser.getUid());
-                            newPost.child("username").setValue(dataSnapshot.child("name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        mprogress.dismiss();
-                                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                                        getActivity().startActivity(intent);
-
-
-                                    }
-
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-
-                    goingToLat = 0;
-                    goingToLng = 0;
-                    goingToText = null;
-                    mprogress.dismiss();
-
-
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            // ...
-                        }
-                    });
-
-        }
-    }
-
 
     @Override
     public void onPlaceSelected(Place place) {
@@ -344,12 +264,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
                 startActivityForResult(galleryIntent, Gallery_Request);
             }
         });
-/*        mSubmitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startPosting();
-            }
-        }); */
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

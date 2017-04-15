@@ -67,10 +67,22 @@
             android:layout_height="700dp"
             android:id="@+id/commentRecyclerList"
             android:layout_marginTop="22dp"
-            android:layout_below="@+id/removeButton"
+            android:layout_below="@+id/editButton"
             android:layout_alignParentStart="true">
 
         </ListView>
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_below="@+id/removeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="13dp"
+            android:background="@color/colorPrimary"
+            android:text="Edit Advert"
+            android:textColor="@color/black"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/removeButton"
@@ -92,15 +104,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="11dp"
             android:id="@+id/textView3"
-            android:layout_below="@+id/imageView2" />
-
-        <fragment android:name="com.google.android.gms.maps.MapFragment"
-            android:id="@+id/mapz" android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_below="@+id/textView4"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="28dp" />
+            android:layout_below="@+id/imageView2"
+            android:textStyle="normal|bold" />
 
         <TextView
             android:text="TextView"
@@ -156,11 +161,11 @@
             android:layout_alignStart="@+id/textView5" />
 
         <TextView
-            android:text="Route On Map"
+            android:text="Additional Comments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="13dp"
-            android:id="@+id/textView4"
+            android:id="@+id/textView33"
             android:textStyle="normal|bold"
             android:textSize="20sp"
             android:layout_below="@+id/remainingSeats"
@@ -188,6 +193,34 @@
             android:padding="10dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp" />
+
+        <fragment android:name="com.google.android.gms.maps.MapFragment"
+            android:id="@+id/mapz" android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/textView4"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:text="Route On Map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:textStyle="normal|bold"
+            android:textSize="20sp"
+            android:layout_marginTop="99dp"
+            android:layout_below="@+id/textView33"
+            android:layout_alignStart="@+id/textView33" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView33"
+            android:layout_alignStart="@+id/textView33"
+            android:layout_marginTop="14dp"
+            android:id="@+id/additionalcomments" />
 
     </RelativeLayout>
 

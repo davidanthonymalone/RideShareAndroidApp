@@ -28,6 +28,7 @@ import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.R;
 
+import static inc.david.androidridesharenavigation.Activities.MainActivity.postToBeEdited;
 import static inc.david.androidridesharenavigation.R.id.auto;
 import static inc.david.androidridesharenavigation.R.id.subAddFrame;
 
@@ -38,7 +39,7 @@ public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSe
 
 
     Button startButton, nextButton;
-    TextView instructionsTV, fromWhereTV, noOfSeatsTV;
+    public static TextView instructionsTV, fromWhereTV, noOfSeatsTV;
     Spinner noOfSeatsSpinner;
     EditText finaldetails;
     TableRow searchRow;
@@ -79,6 +80,11 @@ public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSe
         autocompleteFragment.setBoundsBias(RideShareBoundary);
         startButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
+
+        if(!postToBeEdited.equals("")){
+            TextView instructionsTV2 = (TextView)view.findViewById(R.id.instructionsTV2);
+            instructionsTV2.setText("Start editing your Rideshare ad by clicking start.");
+        }
                 
         return view;
     }

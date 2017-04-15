@@ -38,6 +38,8 @@ import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Models.Advert;
 import inc.david.androidridesharenavigation.R;
 
+import static inc.david.androidridesharenavigation.Activities.MainActivity.thisPostUID;
+
 
 public class AllRideShares extends android.app.Fragment implements SearchView.OnQueryTextListener {
     public RecyclerView adsList;
@@ -148,7 +150,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
         allHeaderTextView.setText(R.string.AllRideShares);
 
 
-        query = rideShareDatabase.orderByChild("comingFrom");
+        query = rideShareDatabase.orderByChild("timeStamp");
          advertadapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                 Advert.class,
                 R.layout.advert_row,
@@ -167,6 +169,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
                 viewHolder.setDesc(model.getComingFrom());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setmLikebtn(post_key);
 
 
 
@@ -180,21 +183,26 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
                         FragmentTransaction fragt = getFragmentManager().beginTransaction();
                         fragt.replace(R.id.homeFrame, new SinglePostFragment()).addToBackStack("").commit();
                         MainActivity.tempUid = post_key;
-
-
+                        thisPostUID = post_key;
                     }
                 });
+
+
                 viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.v("AllRideShares", "checkpoint1");
                         mProcessLike = true;
-
+                        Log.v("AllRideShares", "checkpoint2");
                         likeDatabase.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
-
-                                yourStringArray  = dataSnapshot.getValue(t);
+                                Log.v("AllRideShares", "checkpoint3");
+                               // GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
+                                Log.v("AllRideShares", "checkpoint4");
+                                Log.v("AllRideShares", "dataSnapshot: "+dataSnapshot);
+                               // yourStringArray  = dataSnapshot.getValue(t);
+                                Log.v("AllRideShares", "checkpoint5");
 
 
                                 if (mProcessLike) {
@@ -239,24 +247,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                AllRideShares ride = new AllRideShares();
-
-
-                String d = newText;
-                return true;
-            }
-        });
         super.onCreateOptionsMenu(menu,inflater);
 
     }

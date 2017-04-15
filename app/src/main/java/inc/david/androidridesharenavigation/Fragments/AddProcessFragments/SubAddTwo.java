@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,13 +35,17 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.R;
 
+import static inc.david.androidridesharenavigation.Activities.MainActivity.postToBeEdited;
+import static inc.david.androidridesharenavigation.Fragments.AddFragment.additionalComments;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.comingFrom;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.comingFromLat;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.comingFromLng;
@@ -62,7 +67,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
 
     RelativeLayout addDestinationRelLayout, reviewRelLayout;
     Button finalNextButton, mSubmitBtn;
-    TextView instructionsTV2, comingFromTV, goingToTV, noOfSeatsTV;
+    TextView instructionsTV2, comingFromTV, goingToTV, noOfSeatsTV, addCommentsSummaryTV, additionalCommentsTV;
     PlaceAutocompleteFragment autocompleteFragment;
     private static final LatLngBounds RideShareBoundary = new LatLngBounds(
             new LatLng(52.324925, -8.466647), new LatLng(52.547628, -6.313327));
@@ -84,6 +89,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
         comingFromTV = (TextView)view.findViewById(R.id.comingFromTV);
         goingToTV = (TextView)view.findViewById(R.id.goingToTVSummary);
         noOfSeatsTV = (TextView)view.findViewById(R.id.noOfSeatsTVSummary);
+        addCommentsSummaryTV = (TextView)view.findViewById(R.id.addCommentsSummaryTV);
+        additionalCommentsTV = (EditText)view.findViewById(R.id.additionalCommentsTV);
 
         finalNextButton = (Button)view.findViewById(R.id.finalNextButton);
         mSubmitBtn = (Button)view.findViewById(R.id.submitButton);
@@ -104,6 +111,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
         switch (v.getId()){
 
             case R.id.finalNextButton:
+                additionalComments = additionalCommentsTV.getText().toString();
                 instructionsTV2.setText(R.string.instructions_review);
                 addDestinationRelLayout.setVisibility(View.GONE);
                 reviewRelLayout.setVisibility(View.VISIBLE);
@@ -111,6 +119,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                 comingFromTV.setText(comingFrom);
                 goingToTV.setText(goingTo);
                 noOfSeatsTV.setText(noOfSeatsSelected);
+
+                addCommentsSummaryTV.setText(additionalComments);
 
 
                 break;
@@ -132,9 +142,15 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                             final Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
 
-                            final DatabaseReference newPost = rideShareDatabase.push();
+                            final DatabaseReference newPost;
 
+                            final long timeStamp = System.currentTimeMillis();
 
+                            if(postToBeEdited.equals("")) {
+                                newPost = rideShareDatabase.push();
+                            }else {
+                                newPost = rideShareDatabase.child(postToBeEdited);
+                            }
 
 
                             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
@@ -144,6 +160,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                    if (comingFrom.contains("Waterford")){
 
                                        String cityName = "Waterford";
+
+                                       newPost.child("timeStamp").setValue(timeStamp);
+                                       newPost.child("additionalComments").setValue(additionalComments);
                                     newPost.child("noOfSeats").setValue(noOfSeatsNumber);
                                     newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
                                     newPost.child("city").setValue(cityName);
@@ -162,6 +181,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                postToBeEdited = "";
+                                                Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                 mprogress.dismiss();
                                                 Intent intent = new Intent(getActivity(), MainActivity.class);
                                                 getActivity().startActivity(intent);
@@ -177,7 +199,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                        newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
                                        newPost.child("city").setValue(city);
 
-
+                                       newPost.child("additionalComments").setValue(additionalComments);
+                                       newPost.child("timeStamp").setValue(timeStamp);
 
                                        newPost.child("goingTo").setValue(goingTo);
                                        newPost.child("goingToLat").setValue(goingToLat);
@@ -193,6 +216,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                            @Override
                                            public void onComplete(@NonNull Task<Void> task) {
                                                if (task.isSuccessful()) {
+                                                   Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                   postToBeEdited = "";
+                                                   Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                    mprogress.dismiss();
                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                                    getActivity().startActivity(intent);
@@ -213,7 +239,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                        newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
                                        newPost.child("city").setValue(city);
 
-
+                                       newPost.child("additionalComments").setValue(additionalComments);
+                                       newPost.child("timeStamp").setValue(timeStamp);
 
                                        newPost.child("goingTo").setValue(goingTo);
                                        newPost.child("goingToLat").setValue(goingToLat);
@@ -229,6 +256,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                            @Override
                                            public void onComplete(@NonNull Task<Void> task) {
                                                if (task.isSuccessful()) {
+                                                   Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                   postToBeEdited = "";
+                                                   Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                    mprogress.dismiss();
                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                                    getActivity().startActivity(intent);
@@ -249,7 +279,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                        newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
                                        newPost.child("city").setValue(city);
 
-
+                                       newPost.child("additionalComments").setValue(additionalComments);
+                                       newPost.child("timeStamp").setValue(timeStamp);
 
                                        newPost.child("goingTo").setValue(goingTo);
                                        newPost.child("goingToLat").setValue(goingToLat);
@@ -265,6 +296,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                            @Override
                                            public void onComplete(@NonNull Task<Void> task) {
                                                if (task.isSuccessful()) {
+                                                   Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                   postToBeEdited = "";
+                                                   Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                    mprogress.dismiss();
                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                                    getActivity().startActivity(intent);
@@ -285,7 +319,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                        newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
                                        newPost.child("city").setValue(city);
 
-
+                                       newPost.child("additionalComments").setValue(additionalComments);
+                                       newPost.child("timeStamp").setValue(timeStamp);
 
                                        newPost.child("goingTo").setValue(goingTo);
                                        newPost.child("goingToLat").setValue(goingToLat);
@@ -301,6 +336,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                            @Override
                                            public void onComplete(@NonNull Task<Void> task) {
                                                if (task.isSuccessful()) {
+                                                   Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                   postToBeEdited = "";
+                                                   Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                    mprogress.dismiss();
                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                                    getActivity().startActivity(intent);
@@ -321,7 +359,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                        newPost.child("seatsRemaining").setValue(noOfSeatsNumber);
                                        newPost.child("city").setValue(city);
 
-
+                                       newPost.child("additionalComments").setValue(additionalComments);
+                                       newPost.child("timeStamp").setValue(timeStamp);
 
                                        newPost.child("goingTo").setValue(goingTo);
                                        newPost.child("goingToLat").setValue(goingToLat);
@@ -337,6 +376,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                            @Override
                                            public void onComplete(@NonNull Task<Void> task) {
                                                if (task.isSuccessful()) {
+                                                   Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                   postToBeEdited = "";
+                                                   Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                    mprogress.dismiss();
                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                                    getActivity().startActivity(intent);
@@ -358,7 +400,8 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                        newPost.child("goingTo").setValue(goingTo);
                                        newPost.child("goingToLat").setValue(goingToLat);
                                        newPost.child("goingToLng").setValue(goingToLng);
-
+                                       newPost.child("additionalComments").setValue(additionalComments);
+                                       newPost.child("timeStamp").setValue(timeStamp);
                                        newPost.child("comingFrom").setValue(comingFrom);
                                        newPost.child("comingFromLat").setValue(comingFromLat);
                                        newPost.child("comingFromLng").setValue(comingFromLng);
@@ -369,6 +412,9 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                            @Override
                                            public void onComplete(@NonNull Task<Void> task) {
                                                if (task.isSuccessful()) {
+                                                   Log.v("SubAddTwo", "postToBeEdited - pre_clear:" +postToBeEdited);
+                                                   postToBeEdited = "";
+                                                   Log.v("SubAddTwo", "postToBeEdited - post_clear:" +postToBeEdited);
                                                    mprogress.dismiss();
                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                                    getActivity().startActivity(intent);
@@ -377,11 +423,6 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                                }
                                            }
                                        });
-
-
-
-
-
                                    }
                                 }
 

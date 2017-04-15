@@ -14,6 +14,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="AddFragment">ADdFragment</string>
     <string name="Search">Search</string>
+    <string name="AboutUs">About Us</string>
+
 
 
     <string name="LogOut">logout</string>
