@@ -1,7 +1,6 @@
 package inc.david.androidridesharenavigation.Fragments.AddProcessFragments;
 
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -24,17 +23,13 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.R;
 
 import static inc.david.androidridesharenavigation.Activities.MainActivity.postToBeEdited;
-import static inc.david.androidridesharenavigation.R.id.auto;
 import static inc.david.androidridesharenavigation.R.id.subAddFrame;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSelectionListener, AdapterView.OnItemSelectedListener {
 
 
@@ -108,8 +103,8 @@ public class SubAddOne extends Fragment implements View.OnClickListener, PlaceSe
 
             case R.id.nextButton:
 
-                if(noOfSeatsSpinner.getSelectedItem()==null || AddFragment.comingFrom==null){
-                    Toast.makeText(getActivity(), "Something's wrong, recheck seats and address.",Toast.LENGTH_SHORT).show();
+                if(noOfSeatsSpinner.getSelectedItem()==null || AddFragment.comingFrom==null || AddFragment.imageUri ==null){
+                    Toast.makeText(getActivity(), "Something's wrong, recheck seats and address. and make sure to click the image above, uploading an image is required!",Toast.LENGTH_LONG).show();
                 }else {
                     AddFragment.fragmentManager.beginTransaction().replace(subAddFrame, new SubAddTwo()).commit();
                 }

@@ -17,8 +17,7 @@
         android:layout_alignParentTop="true"
         android:id="@+id/editTextEmailLogin"
         android:layout_alignParentStart="true"
-        android:hint="Email"
-        android:text="david@gmail.com" />
+        android:hint="Enter Email Address:" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -37,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:textColor="@color/cardview_light_background"
+        android:textColor="@color/black"
         android:id="@+id/buttonLogin"
         android:layout_below="@+id/editTextPasswordLogin"
         android:layout_alignParentStart="true" />
@@ -47,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:textColor="@color/cardview_light_background"
+        android:textColor="@color/black"
 
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

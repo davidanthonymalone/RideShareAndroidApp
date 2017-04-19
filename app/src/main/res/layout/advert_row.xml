@@ -14,29 +14,31 @@
             android:text="Going To?"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView12" />
+            android:id="@+id/textView12"
+            android:textSize="20sp"
+            android:textStyle="normal|bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/post_title"
             tools:text="Going To?"
-            android:textStyle="bold"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:text="Leaving From?"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView14" />
+            android:id="@+id/textView14"
+            android:textSize="20sp"
+            android:textStyle="normal|bold" />
 
         <TextView
             android:text="comingFrom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/comingFrom"
-            android:textSize="20sp"
-            android:textStyle="normal|bold" />
+            android:id="@+id/leavingTime"
+            android:textSize="18sp" />
 
         <ImageView
             android:layout_width="match_parent"
@@ -46,6 +48,15 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:padding="10dp" />
+
+        <TextView
+            android:text="Additional Comments?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView16"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingLeft="5dp" />
 
         <TextView
             android:layout_width="match_parent"

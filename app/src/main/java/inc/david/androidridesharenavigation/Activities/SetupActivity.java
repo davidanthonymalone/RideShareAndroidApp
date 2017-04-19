@@ -24,6 +24,7 @@ import inc.david.androidridesharenavigation.R;
 
 public class SetupActivity extends AppCompatActivity {
 
+    //declare all variables.
     private ImageButton setUpImageBttn;
     private EditText nameField;
     private Button profileButton;
@@ -41,6 +42,8 @@ public class SetupActivity extends AppCompatActivity {
         storageImage = FirebaseStorage.getInstance().getReference().child("Profile_images");
         mProgress = new ProgressDialog(this);
 
+        //binds the widgets to the views.
+
         setUpImageBttn = (ImageButton) findViewById(R.id.setupImage);
         nameField = (EditText) findViewById(R.id.editTextProfileName);
         profileButton = (Button) findViewById(R.id.profileSetupButton);
@@ -52,6 +55,7 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        //sets up the image button
         setUpImageBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +69,8 @@ public class SetupActivity extends AppCompatActivity {
 
     }
 
+
+    //method to start up the registration of the account.
     private void startSetupAccount() {
 
         final String name = nameField.getText().toString().trim();
@@ -73,6 +79,8 @@ public class SetupActivity extends AppCompatActivity {
         if(!TextUtils.isEmpty(name) && mImageUri != null){
             mProgress.setMessage("Setting up");
             mProgress.show();
+
+            //the image is stored in the storage and a reference to it is saved in the realtime database.  When I use an image i put the uri into the imageview and that displays the image.
 
             StorageReference filepath = storageImage.child(mImageUri.getLastPathSegment());
 
@@ -98,6 +106,7 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
+    //http://square.github.io/picasso/ the code for picasso was got here.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -111,6 +120,7 @@ public class SetupActivity extends AppCompatActivity {
            // CropImage.activity(imageUri.start(getContext(), this);
 
         }
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {

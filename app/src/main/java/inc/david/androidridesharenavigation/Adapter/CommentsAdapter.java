@@ -44,6 +44,7 @@ public class CommentsAdapter extends BaseAdapter {
     Activity activity;
     ArrayList arrayList;
 
+    //getting the instance of auth and getting all the database references.
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private DatabaseReference getmDatabaseShowComments = FirebaseDatabase.getInstance().getReference()
             .child("RideShare").child(MainActivity.tempUid).child("Comments");
@@ -61,6 +62,8 @@ public class CommentsAdapter extends BaseAdapter {
     int remainingSeats;
 
 
+    // setting teh commetns adapter
+
     public CommentsAdapter(Activity thisActivity, ArrayList thisArrayList, Resources thisResources){
 
         activity = thisActivity;
@@ -70,6 +73,7 @@ public class CommentsAdapter extends BaseAdapter {
     }
 
 
+    //setting the contents for the viewholder
     private static class ViewHolder{
         TextView postedBy;
         TextView commentText;
@@ -99,6 +103,8 @@ public class CommentsAdapter extends BaseAdapter {
         return position;
     }
 
+
+    //Setting all the different variables and binding the widgets to the view.
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;

@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 public class Base extends AppCompatActivity {
 
-
+//base class which inherits which the main activity inherits from.  I built the app this way with an intention to use this class but i never really got around to using it.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

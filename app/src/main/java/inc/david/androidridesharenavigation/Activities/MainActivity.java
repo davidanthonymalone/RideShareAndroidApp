@@ -203,6 +203,7 @@ public class MainActivity extends Base
         Fragment fragment;
 
 
+        //navigation drawer swaps fragments in and out.
         if (id == R.id.nav_home) {
             fragment = AllRideShares.newInstance();
             fragt.replace(R.id.homeFrame, fragment);

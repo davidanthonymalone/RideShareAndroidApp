@@ -1,8 +1,10 @@
 package inc.david.androidridesharenavigation.Fragments;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -57,7 +59,6 @@ import java.util.ArrayList;
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Adapter.CommentList;
 import inc.david.androidridesharenavigation.Adapter.CommentsAdapter;
-import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddOne;
 import inc.david.androidridesharenavigation.Models.Comment;
 import inc.david.androidridesharenavigation.R;
 
@@ -84,6 +85,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
     public static Button editButton;
     public String post_uid;
     TextView creadBy;
+    public String comingFromT, goingTo;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     private GoogleApiClient mGoogleApiClient;
@@ -174,8 +176,8 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    String post_title = (String) dataSnapshot.child("comingFrom").getValue();
-                    String goingTo = (String) dataSnapshot.child("goingTo").getValue();
+                     comingFromT = (String) dataSnapshot.child("comingFrom").getValue();
+                     goingTo = (String) dataSnapshot.child("goingTo").getValue();
                     String created = (String) dataSnapshot.child("username").getValue();
                     String addcomments = (String) dataSnapshot.child("additionalComments").getValue();
                     String post_desc = (String) dataSnapshot.child("desc").getValue();
@@ -188,7 +190,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
                     goingToLat = (double) dataSnapshot.child("goingToLat").getValue();
                     goingToLng = (double) dataSnapshot.child("goingToLng").getValue();
 
-                    comingFromText.setText(post_title);
+                    comingFromText.setText(comingFromT);
                     goingToText.setText(goingTo);
                     desc.setText(post_desc);
                     creadBy.setText(created);
@@ -281,39 +283,18 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
         });
         commmentedit =(EditText) v.findViewById(R.id.editText) ;
 
-        desc = (TextView) v.findViewById(R.id.comingFrom);
+        desc = (TextView) v.findViewById(R.id.leavingTime);
         mSingleRemoveButton = (Button) v.findViewById(R.id.removeButton);
 
 
         final String thisPost = MainActivity.tempUid;
 
+        //method that removes the advert if its clicked by the users creater
         mSingleRemoveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-                //When ad is deleted find all users who've liked it and remove from their collections too
-                Query usersWhoLiked = mDatabase.child(thisPost).child("LikedBy");
-                usersWhoLiked.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot thisUser:dataSnapshot.getChildren()){
-                            mUserDatabase.child(thisUser.getValue().toString()).child("LikedRideShares").child(thisPost).removeValue();
 
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-                //When ad is deleted remove the Likes collection associated with it too
-                mLikesDatabase.child(thisPost).removeValue();
-                mDatabase.child(thisPost).removeValue();
 
             }
         });
@@ -362,13 +343,36 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
         });
 
 
+        //if the edit button is pressed it lets the user edit the advert
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setMessage("Are you sure you want to edit this Advert?");
 
-                postToBeEdited = thisPostUID;
-                FragmentTransaction fragt = getFragmentManager().beginTransaction();
-                fragt.replace(R.id.homeFrame, new AddFragment()).addToBackStack("").commit();
+                alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        postToBeEdited = thisPostUID;
+                        FragmentTransaction fragt = getFragmentManager().beginTransaction();
+                        fragt.replace(R.id.homeFrame, new AddFragment()).addToBackStack("").commit();
+
+
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+
+
 
             }
         });
@@ -413,6 +417,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    //Shows or hides edit button
     public void showEditButton(){
 
         mDatabase.child(thisPostUID).addValueEventListener(new ValueEventListener() {
@@ -520,16 +525,9 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
         }
 
         //Place current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-        //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(5));
+
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(7));
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -559,24 +557,28 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
         return false;
     }
 
+//done with the documentation from here https://developers.google.com/maps/
+    // just sets up the map, adds markers, titles to icons etc.
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Polyline polyline;
         mMap = googleMap;
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(comingFromLat, comingFromLng))
-                .title("Location Coming From"));
+                .title("Location Coming From " + comingFromT).icon(BitmapDescriptorFactory.fromResource(R.drawable.car)));
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(goingToLat, goingToLng))
-                .title("Location Going To"));
+                .title("Location Going To " + goingTo ).icon(BitmapDescriptorFactory.fromResource(R.drawable.car)));
 
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         LatLng point = new LatLng(52.216367, -7.237313);
 
+
+        // sets up a poly line with the lat lng of where the user is going and coming from
         PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
         LatLng s = new LatLng(comingFromLat, comingFromLng);
         LatLng d = new LatLng(goingToLat, goingToLng);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(s, 3));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(s, 7));
         Polyline poly = null;
         Polyline line = mMap.addPolyline(new PolylineOptions()
                 .add(new LatLng(comingFromLat, comingFromLng), new LatLng(goingToLat, goingToLng))
@@ -601,6 +603,7 @@ public class SinglePostFragment extends Fragment implements OnMapReadyCallback,
 
 
     }
+    //builds google api client
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)

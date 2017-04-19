@@ -60,7 +60,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:gravity="bottom"
-            android:text="From where?"
+            android:text="From where? Add location in box below!"
             android:visibility="gone" />
 
         <Button
@@ -89,7 +89,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/fromWhereTV"
                 android:layout_marginTop="5dp"
-                android:hint="Search"></fragment>
+                android:hint="Add in the Location you are leaving from here"></fragment>
 
         </TableRow>
 

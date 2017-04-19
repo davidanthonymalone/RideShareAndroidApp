@@ -3,7 +3,6 @@ package inc.david.androidridesharenavigation.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,17 +42,17 @@ import inc.david.androidridesharenavigation.R;
 
 public class SortyByCounty extends Fragment implements SearchView.OnQueryTextListener {
     public RecyclerView adsList;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     public FirebaseRecyclerAdapter<Advert, AdvertViewHolder> advertadapter;
-    private FirebaseAuth.AuthStateListener mAuthListenter;
-    public DatabaseReference mDatabase;
-    private DatabaseReference mdatabbaseLike;
-    DatabaseReference getmDatabaseUsers;
-    private DatabaseReference mDatabaseCurrentUser;
+    private FirebaseAuth.AuthStateListener authListener;
+    public DatabaseReference rideShareDatabase;
+    private DatabaseReference likeDatabase;
+    DatabaseReference usersDatabase;
+    private DatabaseReference currentUserDatabaseReference;
     public SearchView searchView;
     private Query mQuery;
     public String d;
-    private boolean mProcessLike = false;
+    private boolean proccessLike = false;
     private ProgressDialog p;
     public Query query;
     private boolean mlike = false;
@@ -82,7 +81,7 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle("All RideShares");
+        getActivity().setTitle("Sort By County");
         setHasOptionsMenu(true);
 
 
@@ -95,9 +94,11 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
         v = inflater.inflate(R.layout.fragment_sortyby_county, container, false);
 
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        TextView likedHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
+        likedHeaderTextView.setText(R.string.SortByCounty);
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        rideShareDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                                      @Override
                                                      public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -122,19 +123,20 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
 
 
                                                  });
-        mdatabbaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
+        likeDatabase = FirebaseDatabase.getInstance().getReference().child("Likes");
         String currentUserId = MainActivity.tempUid;
-        mDatabaseCurrentUser = FirebaseDatabase.getInstance().getReference().child("RideShare");
+        currentUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("RideShare");
 
-        mAuth = FirebaseAuth.getInstance();
+
+        auth = FirebaseAuth.getInstance();
         setHasOptionsMenu(true);
 
         postedby = (TextView) v.findViewById(R.id.postedByTextView) ;
         pickcounty = (Spinner) v.findViewById(R.id.spinner);
 
 
-        mdatabbaseLike.keepSynced(true);
-        mDatabase.keepSynced(true);
+        likeDatabase.keepSynced(true);
+        rideShareDatabase.keepSynced(true);
         // Inflate the layout for this fragment
         adsList = (RecyclerView) v.findViewById(R.id.advertslist);
         adsList.setHasFixedSize(true);
@@ -150,13 +152,14 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
     public void onStart() {
         super.onStart();
 
+        // this is a on item selected listener so when the user picks and item it will requery the database with a new county
         pickcounty.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                     String city = parent.getItemAtPosition(i).toString();
                 String TAG = "whoop";
                 Log.d(TAG, "onItemSelected: " + city);
-                query = mDatabase.orderByChild("city").equalTo(city);
+                query = rideShareDatabase.orderByChild("city").equalTo(city);
                 advertadapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                         Advert.class,
                         R.layout.advert_row,
@@ -164,6 +167,7 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
                         query
 
                 ) {
+                    //populate view holder
                     @Override
                     protected void populateViewHolder(AdvertViewHolder viewHolder, final Advert model, int position) {
 
@@ -171,13 +175,14 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
                         final String post_key = getRef(position).getKey();
                         viewHolder.setLeaving((model.getComingFrom()));
                         viewHolder.setTitle((model.getGoingTo()));
-                        viewHolder.setDesc(model.getComingFrom());
+                        viewHolder.setDesc(model.getAdditionalComments());
                         viewHolder.setuserName(model.getUsername());
                         viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
 
 
 
 
+                        //on click listener
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -194,9 +199,9 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
                         viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mProcessLike = true;
+                                proccessLike = true;
 
-                                mdatabbaseLike.addValueEventListener(new ValueEventListener() {
+                                likeDatabase.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
@@ -204,21 +209,21 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
                                         yourStringArray  = dataSnapshot.getValue(t);
 
 
-                                        if (mProcessLike) {
-                                            if (dataSnapshot.child(post_key).hasChild(mAuth.getCurrentUser().getUid())) {
-                                                mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).removeValue();
-                                                mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).removeValue();
-                                                mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                                mProcessLike = false;
+                                        if (proccessLike) {
+                                            if (dataSnapshot.child(post_key).hasChild(auth.getCurrentUser().getUid())) {
+                                                likeDatabase.child(post_key).child(auth.getCurrentUser().getUid()).removeValue();
+                                                mDatabaseUsers.child(auth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).removeValue();
+                                                rideShareDatabase.child(post_key).child("LikedBy").child(auth.getCurrentUser().getUid()).removeValue();
+                                                proccessLike = false;
 
 
 
                                             } else {
-                                                mdatabbaseLike.child(post_key).child(mAuth.getCurrentUser().getUid()).setValue("RandomValue");
-                                                mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).setValue(model);
-                                                mDatabase.child(post_key).child("LikedBy").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+                                                likeDatabase.child(post_key).child(auth.getCurrentUser().getUid()).setValue("RandomValue");
+                                                mDatabaseUsers.child(auth.getCurrentUser().getUid()).child("LikedRideShares").child(post_key).setValue(model);
+                                                rideShareDatabase.child(post_key).child("LikedBy").child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getUid());
 
-                                                mProcessLike = false;
+                                                proccessLike = false;
                                             }
                                         }
                                     }
@@ -238,6 +243,7 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
                 };
 
 
+                //sets adpater for adslist and notifys the database to requery the database.
                 adsList.setAdapter(advertadapter);
                 advertadapter.notifyDataSetChanged();
 
@@ -249,7 +255,7 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
             }
         });
         TextView allHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
-        allHeaderTextView.setText(R.string.AllRideShares);
+        allHeaderTextView.setText(R.string.SortByCounty);
 
         adsList.setAdapter(advertadapter);
 
@@ -280,6 +286,7 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
     public interface OnFragmentInteractionListener {
     }
 
+    // creates the advert view and displays it
 
     public static class AdvertViewHolder extends RecyclerView.ViewHolder {
         View mView;
@@ -304,18 +311,21 @@ public class SortyByCounty extends Fragment implements SearchView.OnQueryTextLis
         }
 
 
+        //setting the leaving field
 
         public void setLeaving(String leaving) {
-            TextView leaving_from = (TextView) mView.findViewById(R.id.comingFrom);
+            TextView leaving_from = (TextView) mView.findViewById(R.id.leavingTime);
             leaving_from.setText(leaving);
 
         }
 
+        //setting title
         public void setTitle(String title) {
             TextView post_title = (TextView) mView.findViewById(R.id.post_title);
             post_title.setText(title);
         }
 
+        //setting description.
         public void setDesc(String desc) {
             TextView post_desc = (TextView) mView.findViewById(R.id.post_desc);
             post_desc.setText(desc);

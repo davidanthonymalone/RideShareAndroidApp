@@ -18,6 +18,7 @@ public class UserFeedback {
         this.rating = rating;
     }
 
+    //blank constructor is needed for fragments.
     public UserFeedback(){
 
     }

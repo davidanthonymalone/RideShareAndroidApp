@@ -10,12 +10,14 @@ import java.util.Map;
  */
 @IgnoreExtraProperties
 public class Advert {
+    //variables
     private String comingFrom,  goingTo, username,
-            image, uid, city;
+            image, uid, city, additionalComments;
     private int advertid;
     private Map<String,String> comments = new HashMap<String, String>();
     private Map<String,String> likedBy = new HashMap<>();
 
+    //getters and setters
     public Map<String, String> getComments() {
         return comments;
     }
@@ -38,6 +40,29 @@ public class Advert {
 
     public void setUsersAccepted(Map<String, String> usersAccepted) {
         this.usersAccepted = usersAccepted;
+    }
+
+    //constructor
+    public Advert(String comingFrom, String goingTo, String username, String image, String uid, String city, String additionalComments, int advertid, Map<String, String> comments,
+                  Map<String, String> likedBy, Map<String, String> usersAccepted,
+                  long goingToLat, long goingToLng, long comingFromLat, long comingFromLng, int seatsRemaining, int noOfSeats) {
+        this.comingFrom = comingFrom;
+        this.goingTo = goingTo;
+        this.username = username;
+        this.image = image;
+        this.uid = uid;
+        this.city = city;
+        this.additionalComments = additionalComments;
+        this.advertid = advertid;
+        this.comments = comments;
+        this.likedBy = likedBy;
+        this.usersAccepted = usersAccepted;
+        this.goingToLat = goingToLat;
+        this.goingToLng = goingToLng;
+        this.comingFromLat = comingFromLat;
+        this.comingFromLng = comingFromLng;
+        this.seatsRemaining = seatsRemaining;
+        this.noOfSeats = noOfSeats;
     }
 
     public String getCity() {
@@ -113,6 +138,15 @@ public class Advert {
     public Advert() {
 
     }
+
+    public String getAdditionalComments() {
+        return additionalComments;
+    }
+
+    public void setAdditionalComments(String additionalComments) {
+        this.additionalComments = additionalComments;
+    }
+
     public String getUid() {
         return uid;
     }
@@ -160,25 +194,5 @@ public class Advert {
         this.advertid = advertid;
     }
 
-    public Advert(String comingFrom, String city, int advertid, String username, String goingTo, String image, String uid,
-                  long goingToLat, long goingToLng, long comingFromLat, long comingFromLng,
-                  int seatsRemaining, int noOfSeats, Map<String,String> comments, Map<String,String> likedBy, Map<String,String> usersAccepted) {
-        this.comingFrom = comingFrom;
-        this.username = username;
-        this.goingTo = goingTo;
-        this.image = image;
-        this.uid = uid;
-        this.advertid = advertid;
-        this.city = city;
 
-        this.goingToLat = goingToLat;
-        this.goingToLng = goingToLng;
-        this.comingFromLat = comingFromLat;
-        this.comingFromLng = comingFromLng;
-        this.seatsRemaining = seatsRemaining;
-        this.noOfSeats = noOfSeats;
-        this.comments = comments;
-        this.usersAccepted = usersAccepted;
-        this.likedBy = likedBy;
-    }
 }

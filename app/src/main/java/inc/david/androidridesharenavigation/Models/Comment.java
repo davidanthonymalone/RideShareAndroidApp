@@ -10,6 +10,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
  */
 @IgnoreExtraProperties
 public class Comment {
+    //variables
     private String commentText;
     private String postedBy;
     private String postedByIDText;
@@ -33,6 +34,8 @@ public class Comment {
     public Comment(){
 
     }
+
+    //constructor
 
     public Comment(String commentText, String postedBy, String postedByIDText, String accepted) {
         this.commentText = commentText;

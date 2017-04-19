@@ -1,7 +1,6 @@
 package inc.david.androidridesharenavigation.Fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,35 +23,26 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import inc.david.androidridesharenavigation.Activities.MainActivity;
-import inc.david.androidridesharenavigation.Activities.SetupActivity;
 import inc.david.androidridesharenavigation.R;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Profile.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Profile#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Profile extends Fragment {
 
-    private ImageButton mSetupImageBtn;
-    private EditText mNameField;
+    private ImageButton setupImgBtn;
+    private EditText nameField;
     private Button profileButton;
     private static final int GALLERY_REQUEST = 1;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     private Uri mImageUri = null;
-    private DatabaseReference mDatabaseUsers;
-    private ProgressDialog mProgress;
-    private StorageReference mStorageImage;
+    private DatabaseReference databaseUsers;
+    private ProgressDialog progress;
+    private StorageReference storageImg;
     private OnFragmentInteractionListener mListener;
-    private TextView profileName;
+    private TextView profileName, emailtext;
     View v;
 
     public Profile() {
@@ -67,6 +57,8 @@ public class Profile extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle("Profile");
+
 
     }
 
@@ -75,16 +67,19 @@ public class Profile extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_profile, container, false);
-        mAuth = FirebaseAuth.getInstance();
-        mStorageImage = FirebaseStorage.getInstance().getReference().child("Profile_images");
-        mProgress = new ProgressDialog(getActivity());
+        auth = FirebaseAuth.getInstance();
+        storageImg = FirebaseStorage.getInstance().getReference().child("Profile_images");
+        progress = new ProgressDialog(getActivity());
 
         TextView profileHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
         profileHeaderTextView.setText(R.string.Profile);
 
-        mSetupImageBtn = (ImageButton) v.findViewById(R.id.setupImage);
-        mNameField = (EditText) v.findViewById(R.id.editTextProfileName);
+
+        //binding the variables to the widgets.
+        setupImgBtn = (ImageButton) v.findViewById(R.id.setupImage);
+        nameField = (EditText) v.findViewById(R.id.editTextProfileName);
         profileName = (TextView) v.findViewById(R.id.textProfileName);
+        emailtext = (TextView) v.findViewById(R.id.emailtext);
         profileButton = (Button) v.findViewById(R.id.profileSetupButton);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,18 +87,21 @@ public class Profile extends Fragment {
                 startSetupAccount();
             }
         });
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
-        if(mAuth.getCurrentUser().getPhotoUrl() != null ){
-            Picasso.with(getActivity()).load(mAuth.getCurrentUser().getPhotoUrl()).resize(500, 500).into(mSetupImageBtn);
+        databaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        if(auth.getCurrentUser().getPhotoUrl() != null ){
+            Picasso.with(getActivity()).load(auth.getCurrentUser().getPhotoUrl()).resize(500, 500).into(setupImgBtn);
 
         }
-        if(mAuth.getCurrentUser().getDisplayName() != null){
-            profileName.setText(mAuth.getCurrentUser().getDisplayName());
-            mNameField.setVisibility(View.GONE);
+        if(auth.getCurrentUser().getDisplayName() != null){
+            profileName.setText(auth.getCurrentUser().getDisplayName());
+            emailtext.setText(auth.getCurrentUser().getEmail());
+            nameField.setVisibility(View.GONE);
+
 
         }
 
-        mSetupImageBtn.setOnClickListener(new View.OnClickListener() {
+        //just a onclick listener for the image
+        setupImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -134,25 +132,27 @@ public class Profile extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    //does the setting up of the acccount.
     private void startSetupAccount() {
 
-        final String name = mNameField.getText().toString().trim();
+        final String name = nameField.getText().toString().trim();
 
-        final String user_id = mAuth.getCurrentUser().getUid();
+        final String user_id = auth.getCurrentUser().getUid();
         if(!TextUtils.isEmpty(name) && mImageUri != null){
-            mProgress.setMessage("Setting up");
-            mProgress.show();
+            progress.setMessage("Setting up");
+            progress.show();
 
-            StorageReference filepath = mStorageImage.child(mImageUri.getLastPathSegment());
+            StorageReference filepath = storageImg.child(mImageUri.getLastPathSegment());
 
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     String downloadUri = taskSnapshot.getDownloadUrl().toString();
-                    mDatabaseUsers.child(user_id).child("name").setValue(name);
-                    mDatabaseUsers.child(user_id).child("image").setValue(downloadUri);
-                    mProgress.dismiss();
+                    databaseUsers.child(user_id).child("name").setValue(name);
+                    databaseUsers.child(user_id).child("image").setValue(downloadUri);
+                    progress.dismiss();
                     Intent setupIntent = new Intent(getActivity(), MainActivity.class);
                     setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(setupIntent);
@@ -167,6 +167,8 @@ public class Profile extends Fragment {
         }
     }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -175,15 +177,14 @@ public class Profile extends Fragment {
             Intent intent = CropImage.activity(imageUri)
                     .getIntent(getContext());
             startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
-// for fragment (DO NOT use `getActivity()`)
-            // CropImage.activity(imageUri.start(getContext(), this);
+
 
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 mImageUri = result.getUri();
-                mSetupImageBtn.setImageURI(mImageUri);
+                setupImgBtn.setImageURI(mImageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

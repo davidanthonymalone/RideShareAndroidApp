@@ -12,9 +12,10 @@
     <!-- TODO: Remove or change this placeholder spinnercity -->
     <string name="title_activity_base">Base</string>
     <string name="title_activity_maps">Map</string>
-    <string name="AddFragment">ADdFragment</string>
+    <string name="AddFragment">Add Fragment</string>
     <string name="Search">Search</string>
     <string name="AboutUs">About Us</string>
+    <string name="SortByCounty">Sort By County</string>
 
 
 

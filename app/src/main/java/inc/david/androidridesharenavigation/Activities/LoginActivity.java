@@ -49,8 +49,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private static final int RC_SIGN_IN = 1;
-    private SignInButton mGoogleBtn;
-    GoogleApiClient mGoogleApiClient;
+    private SignInButton googleBtn;
+    GoogleApiClient googleApiClient;
     private static final String TAG = "loginactivity";
     private FirebaseUser currentUSer;
 
@@ -83,13 +83,13 @@ public class LoginActivity extends AppCompatActivity {
         //binds the data to the widgets
         loginEmailField = (EditText) findViewById(R.id.editTextEmailLogin);
         loginPasswordField = (EditText) findViewById(R.id.editTextPasswordLogin);
-        mGoogleBtn = (SignInButton) findViewById(R.id.googleID);
+        googleBtn = (SignInButton) findViewById(R.id.googleID);
         loginButton = (Button) findViewById(R.id.buttonLogin);
 
         button = (Button) findViewById(R.id.buttonRegister);
 
         //listener for google sign in button and launches method when clicked
-        mGoogleBtn.setOnClickListener(new View.OnClickListener() {
+        googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 googleSignInF();
@@ -99,13 +99,15 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+        //as said in the document the api documentation gave me this code at https://firebase.google.com/docs/auth/android/google-signin
+
 
         // =========================Google Sign in  =================================================
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestScopes(new Scope(Scopes.PLUS_LOGIN))
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
                 Toast.makeText(LoginActivity.this, "Sign in not successful", Toast.LENGTH_LONG).show();
@@ -136,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
     private void googleSignInF() {
 
         try {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
             startActivityForResult(signInIntent, RC_SIGN_IN);
         }catch(Exception e){
             
@@ -183,6 +185,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+
+    //this works with firebase auth with google
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         checkUserExists();
@@ -207,6 +211,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+    //just a method to check if the user in face logged in before they can access the main activity
     private void checkLogin() {
 
         String email = loginEmailField.getText().toString().trim();

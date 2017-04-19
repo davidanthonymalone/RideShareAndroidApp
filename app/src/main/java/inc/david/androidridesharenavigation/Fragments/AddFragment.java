@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,29 +28,18 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddProcessFragments.SubAddOne;
 import inc.david.androidridesharenavigation.R;
 
 import static android.app.Activity.RESULT_OK;
-import static inc.david.androidridesharenavigation.Activities.MainActivity.postToBeEdited;
 
 
 public class AddFragment extends android.app.Fragment implements AdapterView.OnItemSelectedListener,
@@ -61,6 +49,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
         View.OnClickListener,
         PlaceSelectionListener {
 
+    //all variables required for this class
     View view;
     private ImageButton mSelectImage;
     private Spinner commentText;
@@ -70,7 +59,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public static double goingToLng;
     public static double comingFromLat;
     public static double comingFromLng;
-    public static Uri mImageUri = null;
+    public static Uri imageUri = null;
     private static final int GALLERY_REQUEST = 1;
     private static final String LOG_TAG = "PlaceSelectionListener";
     private static final int REQUEST_SELECT_PLACE = 1000;
@@ -85,7 +74,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public static DatabaseReference mDatabaseUsers;
     private static final LatLngBounds WATERFORD_BAR_VIEW = new LatLngBounds(
             new LatLng(52.254539, -7.149922), new LatLng(52.254700, -7.100484));
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     public static FirebaseUser currentUser;
     public static ProgressDialog mprogress;
     public String title__val, desc_val;
@@ -113,6 +102,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setting title
         getActivity().setTitle("Add Fragment");
 
 
@@ -122,10 +112,13 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //getting storage referemnce
         mStorage = FirebaseStorage.getInstance().getReference();
+        //getting database reference
         rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("RideShare");
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
+        auth = FirebaseAuth.getInstance();
+        mCurrentUser = auth.getCurrentUser();
         mprogress = new ProgressDialog(getActivity());
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
         sortedByCountyDatabase = FirebaseDatabase.getInstance().getReference().child("SortedByCounty");
@@ -133,10 +126,14 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
         view = inflater.inflate(R.layout.fragment_add, container, false);
 
 
+        //binding data to the weidgets for next few lines
+
         subAddFrame = (FrameLayout)view.findViewById(R.id.subAddFrame);
 
         fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.subAddFrame, new SubAddOne()).commit();
+        TextView likedHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
+        likedHeaderTextView.setText(R.string.AddFragment);
 
         noOfSeatsSpinner = (Spinner)view.findViewById(R.id.noOfSeatsSpinner);
         ArrayAdapter noOfSeatsAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.no_of_seats, android.R.layout.simple_spinner_item);
@@ -154,6 +151,8 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
             }
         });
 
+
+
         commentText = (Spinner) view.findViewById(R.id.locationComingFrom);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.county_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -163,14 +162,6 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
 
         mSelectImage = (ImageButton) view.findViewById(R.id.imageButton);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-  //      goingToText.setAdapter(adapter);
-    //    goingToText.setOnItemSelectedListener(this);
-/*
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getChildFragmentManager().findFragmentById(R.id.place_fragment);
-        autocompleteFragment.setOnPlaceSelectedListener(this);
-        autocompleteFragment.setBoundsBias(WATERFORD_BAR_VIEW);
-*/
 
 
 
@@ -198,8 +189,14 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
 
     }
 
+
+    //on place selected is the code for the google places.
+    //https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete
+    //I leanred how to do the below method from the documentation here.
     @Override
     public void onPlaceSelected(Place place) {
+
+        //getting the place selected
 
         goingTo = place.getAddress().toString();
         goingToLat = place.getLatLng().latitude;
@@ -245,8 +242,8 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                mImageUri = result.getUri();
-                mSelectImage.setImageURI(mImageUri);
+                imageUri = result.getUri();
+                mSelectImage.setImageURI(imageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
@@ -256,6 +253,7 @@ public class AddFragment extends android.app.Fragment implements AdapterView.OnI
     public void onStart() {
         super.onStart();
 
+        //setting the image.
         mSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

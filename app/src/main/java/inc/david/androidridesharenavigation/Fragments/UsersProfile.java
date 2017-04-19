@@ -105,10 +105,12 @@ public class UsersProfile
         feedback = (EditText) v.findViewById(R.id.feedbackEdit);
 
 
+        TextView likedHeaderTextView = (TextView) getActivity().findViewById(R.id.mainTitle);
+        likedHeaderTextView.setText(R.string.Profile);
 
 
 
-
+        // just binding the widgets to the view.
         mSetupImageBtn = (ImageButton) v.findViewById(R.id.setupImage);
         profileName = (TextView) v.findViewById(R.id.editTextProfileName);
         button = (Button) v.findViewById(R.id.feedbackButton);
@@ -205,6 +207,8 @@ public class UsersProfile
         ) {
 
 
+
+            //populating view holder
             @Override
             protected void populateViewHolder(UserProfileFeedbac viewHolder, UserFeedback model, int position) {
                 viewHolder.setComment(model.getComment());
@@ -228,6 +232,8 @@ public class UsersProfile
             mView = itemView;
         }
 
+
+        //setting the comment field
         public void setComment(String comment) {
             TextView post_comment = (TextView) mView.findViewById(R.id.commentText);
 
@@ -236,12 +242,14 @@ public class UsersProfile
 
         }
 
+        //setting the posted by field
         public void setPostedBy(String postedby) {
             TextView post_postedby = (TextView) mView.findViewById(R.id.postedby);
             post_postedby.setText(postedby);
 
         }
 
+        //setting the ratings
         public void setRatings(Double rating) {
 
             String total2 = String.valueOf(rating);

@@ -2,8 +2,6 @@ package inc.david.androidridesharenavigation.Fragments.AddProcessFragments;
 
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -34,12 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import inc.david.androidridesharenavigation.Activities.MainActivity;
 import inc.david.androidridesharenavigation.Fragments.AddFragment;
 import inc.david.androidridesharenavigation.R;
@@ -55,14 +47,12 @@ import static inc.david.androidridesharenavigation.Fragments.AddFragment.goingTo
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mCurrentUser;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.rideShareDatabase;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mDatabaseUsers;
-import static inc.david.androidridesharenavigation.Fragments.AddFragment.mImageUri;
+import static inc.david.androidridesharenavigation.Fragments.AddFragment.imageUri;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.mprogress;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.noOfSeatsNumber;
 import static inc.david.androidridesharenavigation.Fragments.AddFragment.noOfSeatsSelected;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSelectionListener {
 
     RelativeLayout addDestinationRelLayout, reviewRelLayout;
@@ -85,6 +75,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
 
         addDestinationRelLayout = (RelativeLayout)view.findViewById(R.id.addDestinationRelLayout);
         reviewRelLayout = (RelativeLayout)view.findViewById(R.id.reviewRelLayout);
+
         instructionsTV2 = (TextView)view.findViewById(R.id.instructionsTV2);
         comingFromTV = (TextView)view.findViewById(R.id.comingFromTV);
         goingToTV = (TextView)view.findViewById(R.id.goingToTVSummary);
@@ -120,7 +111,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                 goingToTV.setText(goingTo);
                 noOfSeatsTV.setText(noOfSeatsSelected);
 
-                addCommentsSummaryTV.setText(additionalComments);
+                addCommentsSummaryTV.setText(" " +additionalComments);
 
 
                 break;
@@ -131,11 +122,12 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                     noOfSeatsNumber = Integer.parseInt(noOfSeatsSelected);
                 }
                 // final String desc_val = goingToText.getText().toString().trim();
-                if(!TextUtils.isEmpty(comingFrom)  && mImageUri != null){
+                if(!TextUtils.isEmpty(comingFrom)  && imageUri != null){
+                    mprogress.setTitle("Adding RideShare");
                     mprogress.show();
 
-                    StorageReference filepath = AddFragment.mStorage.child("RideShare").child(mImageUri.getLastPathSegment());
-                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    StorageReference filepath = AddFragment.mStorage.child("RideShare").child(imageUri.getLastPathSegment());
+                    filepath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             // Get a URL to the uploaded content
@@ -160,6 +152,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
                                    if (comingFrom.contains("Waterford")){
 
                                        String cityName = "Waterford";
+
 
                                        newPost.child("timeStamp").setValue(timeStamp);
                                        newPost.child("additionalComments").setValue(additionalComments);
@@ -393,6 +386,7 @@ public class SubAddTwo extends Fragment implements View.OnClickListener, PlaceSe
 
 
                                    }else{
+
 
 
                                        newPost.child("noOfSeats").setValue(noOfSeatsNumber);

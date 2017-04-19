@@ -34,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
+        //getting instance of database reference users
         rideShareDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
         nameField = (EditText) findViewById(R.id.editTextName);
@@ -57,6 +58,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void startRegister() {
+        //just getting the users name and password to register
+
         final String name = nameField.getText().toString().trim();
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
@@ -65,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
             mProgress.setMessage("Signing up to RideShare");
             mProgress.show();
 
+            //creating usser with the instance of mauth
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {

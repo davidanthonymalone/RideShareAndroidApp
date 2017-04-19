@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:textColor="@color/cardview_light_background"
+        android:textColor="@color/black"
         android:layout_marginTop="16dp"
         android:id="@+id/buttonRegister"
         android:layout_below="@+id/editTextPassword"

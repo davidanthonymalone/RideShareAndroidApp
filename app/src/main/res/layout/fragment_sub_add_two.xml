@@ -98,8 +98,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@+id/textView13"
-                    android:layout_marginTop="29dp"
+                    android:layout_below="@+id/addCommentsSummaryTV"
+                    android:layout_marginTop="40dp"
                     android:background="@color/colorPrimary"
                     android:text="Add RideShare Add"
                     android:textColor="@android:color/background_dark"
@@ -112,7 +112,7 @@
                     android:layout_below="@+id/textView13"
                     android:layout_toStartOf="@+id/noOfSeatsTVSummary"
                     android:gravity="center_vertical"
-                    android:text="Add. Comments:" />
+                    android:text="Add Comments:" />
 
                 <TextView
                     android:id="@+id/addCommentsSummaryTV"
@@ -147,7 +147,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/goingToTV"
                     android:layout_marginTop="12dp"
-                    android:hint="Search"></fragment>
+                    android:hint="A"></fragment>
 
                 <Button
                     android:id="@+id/finalNextButton"
@@ -160,25 +160,25 @@
                     android:text="Next"
                     android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/textView15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/place_fragment_2"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="29dp"
-                    android:text="Additional Comments: " />
-
                 <EditText
                     android:id="@+id/additionalCommentsTV"
                     android:layout_width="350dp"
                     android:layout_height="100dp"
                     android:ems="10"
-                    android:inputType="textMultiLine"
                     android:lines="2"
+                    android:hint="Here add what time you are leaving at, coming home at, smoking or non smoking etc."
                     android:layout_below="@+id/textView15"
                     android:layout_centerHorizontal="true"
-                    android:hint="Here add what time you are leaving at, coming home at, smoking or non smoking etc." />
+                    android:layout_marginTop="17dp"
+                    android:inputType="textMultiLine" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Additional Comments: "
+                    android:layout_below="@+id/place_fragment_2"
+                    android:layout_centerHorizontal="true" />
 
             </RelativeLayout>
         </RelativeLayout>

@@ -3,7 +3,6 @@ package inc.david.androidridesharenavigation.Fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
@@ -42,6 +40,7 @@ import static inc.david.androidridesharenavigation.Activities.MainActivity.thisP
 
 
 public class AllRideShares extends android.app.Fragment implements SearchView.OnQueryTextListener {
+    //All the necassary variables
     public RecyclerView adsList;
     private FirebaseAuth mAuth;
     public FirebaseRecyclerAdapter<Advert, AdvertViewHolder> advertadapter;
@@ -68,10 +67,12 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
     View v;
 
 
+    //required empty constructor
     public AllRideShares() {
         // Required empty public constructor
     }
 
+    //Cosntructor
     public static AllRideShares newInstance() {
         AllRideShares fragment = new AllRideShares();
         return fragment;
@@ -87,6 +88,8 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
 
     }
 
+
+    //inflates the view and sets out the layout, also gets database references.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -150,6 +153,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
         allHeaderTextView.setText(R.string.AllRideShares);
 
 
+        //queries the database for the timestamp
         query = rideShareDatabase.orderByChild("timeStamp");
          advertadapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                 Advert.class,
@@ -162,11 +166,13 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
             @Override
             protected void populateViewHolder(AdvertViewHolder viewHolder, final Advert model, int position) {
 
+
+                //populating teh view holder.
                 advert = model;
                 final String post_key = getRef(position).getKey();
                 viewHolder.setLeaving((model.getComingFrom()));
                 viewHolder.setTitle((model.getGoingTo()));
-                viewHolder.setDesc(model.getComingFrom());
+                viewHolder.setDesc(model.getAdditionalComments());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setmLikebtn(post_key);
@@ -174,6 +180,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
 
 
 
+                //creates on on Selected listener on the view holder
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -188,6 +195,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
                 });
 
 
+                //onclicklisetener on hte like button, which is jsut listening to see if an event takes place.
                 viewHolder.mLikebtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -269,12 +277,15 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
     }
 
 
+
+    //layout of the advert view holder
     public static class AdvertViewHolder extends RecyclerView.ViewHolder {
         View mView;
         TextView post_title, comingFrom;
         ImageButton mLikebtn;
         DatabaseReference mDatabaseLike;
         FirebaseAuth mAuth;
+
 
 
 
@@ -294,7 +305,7 @@ public class AllRideShares extends android.app.Fragment implements SearchView.On
 
 
         public void setLeaving(String leaving) {
-            TextView leaving_from = (TextView) mView.findViewById(R.id.comingFrom);
+            TextView leaving_from = (TextView) mView.findViewById(R.id.leavingTime);
             leaving_from.setText(leaving);
 
         }

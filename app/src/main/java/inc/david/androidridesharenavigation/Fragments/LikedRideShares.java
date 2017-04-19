@@ -58,6 +58,8 @@ public class LikedRideShares extends android.app.Fragment {
         return fragment;
     }
 
+
+    //the on create method and just sets the title to the name of the fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,7 @@ public class LikedRideShares extends android.app.Fragment {
 
     }
 
+    //same as any other fragment you just bind the widgets to the code here and declare istances of database/auth etc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,6 +106,7 @@ public class LikedRideShares extends android.app.Fragment {
         Query query = mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("LikedRideShares");
         Log.v("LikedRideShare","Query: "+query.toString());
 
+        //Frebase recycler adapter is a useful way ot laying out your list using a recycler adapter.
         FirebaseRecyclerAdapter<Advert, AdvertViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Advert, AdvertViewHolder>(
                 Advert.class,
                 R.layout.advert_row,
@@ -116,17 +120,16 @@ public class LikedRideShares extends android.app.Fragment {
             protected void populateViewHolder(AdvertViewHolder viewHolder, Advert model, int position) {
 
 
-                final String post_key = getRef(position).getKey();
-                Log.v("LikedRideShare","post_key: "+post_key);
 
+                //setting and populting the viewholder
+                Advert advert = model;
+                final String post_key = getRef(position).getKey();
+                viewHolder.setLeaving((model.getComingFrom()));
                 viewHolder.setTitle((model.getGoingTo()));
-                Log.v("LikedRideShare","setTitle: "+model.getGoingTo());
-                viewHolder.setDesc(model.getComingFrom());
-                Log.v("LikedRideShare","setDesc: "+model.getComingFrom());
+                viewHolder.setDesc(model.getAdditionalComments());
                 viewHolder.setuserName(model.getUsername());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setmLikebtn(post_key);
-
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -204,6 +207,7 @@ public class LikedRideShares extends android.app.Fragment {
 
         }
 
+        //just methodds below to set all the varabiesl to the variables.
         public void setTitle(String title) {
             TextView post_title = (TextView) mView.findViewById(R.id.post_title);
             post_title.setText(title);
@@ -213,6 +217,11 @@ public class LikedRideShares extends android.app.Fragment {
         public void setDesc(String desc) {
             TextView post_desc = (TextView) mView.findViewById(R.id.post_desc);
             post_desc.setText(desc);
+        }
+        public void setLeaving(String leaving) {
+            TextView leaving_from = (TextView) mView.findViewById(R.id.leavingTime);
+            leaving_from.setText(leaving);
+
         }
 
         public void setImage(Context ctx, String image) {

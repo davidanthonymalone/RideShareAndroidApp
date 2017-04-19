@@ -52,7 +52,6 @@ public class MapsActivity2
     int locationCount;
 
     protected TextView titleBar;
-    private String beerName, Bar;
     //GoogleMap Object
     private GoogleMap mMap;
     private String mlattext, mlngtext;
@@ -61,7 +60,7 @@ public class MapsActivity2
     TextView textView;
     Location getmLastLocation;
     SeekBar seekBar;
-    int maxBeerPrice = 20;
+
     View view;
 
 
@@ -210,10 +209,6 @@ public class MapsActivity2
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
 
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
 
 
         //stop location updates
@@ -261,13 +256,6 @@ public class MapsActivity2
 
     }
 
-   /* public void addMarersToMap(List<Beer> list) {
-        for (Beer beer : app.dbManager.getAll()) {
-            if (beer.price <= maxBeerPrice) {
-                this.mMap.addMarker(new MarkerOptions().position(new LatLng(beer.lat, beer.lng)).title(beer.name + " \u20ac" + beer.price).snippet(beer.bar + " " + beer.price).icon(BitmapDescriptorFactory.fromResource(R.drawable.bar)));
-            }
-        }
-    }
-*/
+
 
 }
